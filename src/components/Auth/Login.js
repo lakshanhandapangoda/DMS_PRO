@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faLock, faBuilding } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
-
-const Login = () => {
+import { withRouter } from "react-router-dom";
+const Login = ({ history }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [branch, setBranch] = useState("");
@@ -17,8 +17,8 @@ const Login = () => {
   const fetchBranches = async () => {
     try {
       const response = await axios.post(
-        `${baseURL}Authentication/GetBranches`,
-        {},
+        `${baseURL}Authentication/GetCurrentBranch`,
+        "::1",
         {
           headers: {
             "Content-Type": "application/json",
@@ -27,7 +27,8 @@ const Login = () => {
         }
       );
 
-      setBranches(response.data);
+      console.log(response.data["customerCode"]);
+      setBranches(response.data["customerCode"]);
     } catch (error) {
       console.error("Error occurred while fetching branches:", error);
       setError("Failed to fetch branches");
@@ -45,13 +46,14 @@ const Login = () => {
       const clientIp = responseIp.data.ip;
       console.log("ip", clientIp);
       const response = await axios.post(`${baseURL}Authentication/Login`, {
-        branchIP: clientIp,
-        branchCode: branch,
+        branchIP: ":1",
+        branchCode: branches,
         userId: username,
         password: password,
       });
       if (response.status === 200) {
         setSuccess("Login successful");
+        history.push("/");
       } else {
         setError("Login failed");
       }
@@ -94,19 +96,14 @@ const Login = () => {
                   <FontAwesomeIcon icon={faBuilding} />
                 </span>
               </div>
-              <select
+              <input
+                type="text"
                 id="branch"
                 className="form-control"
-                value={branch}
-                onChange={(e) => setBranch(e.target.value)}
+                placeholder="Username"
+                value={branches}
                 required
-              >
-                <option value="0001010">0001010</option>
-                <option value="1234">1234</option>
-                {/* {branches.map((branchItem) => (
-    <option key={branchItem.code} value={branchItem.code}>{branchItem.name}</option>
-  ))} */}
-              </select>
+              />
             </div>
           </div>
           <div className="form-group">
@@ -160,4 +157,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withRouter(Login);

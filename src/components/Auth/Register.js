@@ -26,32 +26,29 @@ const Register = () => {
         `${baseURL}Authentication/PostUser`,
         {
           oUserForRegisterDto: {
-         
             userType: userType.toString(),
-            userStatus: 0, 
-            noOfAttempts: 0, 
+            userStatus: 0,
+            noOfAttempts: 0,
             emailAddress: "",
-            createdBy: username.toString(), 
+            createdBy: username.toString(),
             createdDateTime: new Date().toISOString(),
-            createdWorkStation: "", 
+            createdWorkStation: "",
             modifiedBy: "",
             modifiedDateTime: new Date().toISOString(),
-            modifiedWorkStation: ""
-            
+            modifiedWorkStation: "",
           },
           UserId: userId,
           Password: password,
           UserName: username,
-          BranchCode: "1234"
+          BranchCode: "0001010",
         },
         {
           headers: {
-            'Content-Type': 'application/json',
-            'accept': '*/*'
-          }
+            "Content-Type": "application/json",
+            accept: "*/*",
+          },
         }
       );
-      
 
       if (response.status === 201) {
         setSuccess("A new user has been successfully created");
@@ -68,10 +65,20 @@ const Register = () => {
       <div className="register-wrapper">
         <div className="register-header">
           <div>
-            <img src={require("../Auth/logo (2).png")} alt="Logo" style={{ width: "330px", height: "100px", margin: "auto" }} />
+            <img
+              src={require("../Auth/logo (2).png")}
+              alt="Logo"
+              style={{ width: "330px", height: "100px", margin: "auto" }}
+            />
           </div>
-          <h2 style={{ fontFamily: "Arial, sans-serif", fontWeight: "bold" }}>Branch Inventory</h2><br/>
-          <h4 style={{ fontFamily: "Arial, sans-serif", fontStyle: "" }}>Management System</h4><br/>
+          <h2 style={{ fontFamily: "Arial, sans-serif", fontWeight: "bold" }}>
+            Branch Inventory
+          </h2>
+          <br />
+          <h4 style={{ fontFamily: "Arial, sans-serif", fontStyle: "" }}>
+            Management System
+          </h4>
+          <br />
         </div>
         {error && <div className="alert alert-danger">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
@@ -174,11 +181,14 @@ const Register = () => {
           </button>
         </form>
         <p className="mt-3 text-center">
-          Already have an account? <Link to="/login" style={{ color: "blue" }}>Sign in</Link>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "blue" }}>
+            Sign in
+          </Link>
         </p>
       </div>
     </div>
   );
 };
 
-export default Register
+export default Register;

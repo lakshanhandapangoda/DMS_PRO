@@ -43,7 +43,7 @@ function UserMaintenance() {
       <div>
         <div className="flex-fill ml-3 mx-4">
           <Card>
-            <Card.Header as="h6">Pending Delivery</Card.Header>
+            <Card.Header as="h6">User Maintenance</Card.Header>
             <Card.Body>
               {/* Creative search field */}
               <div className="input-group mb-3">
