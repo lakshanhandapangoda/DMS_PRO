@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 const Login = ({ history }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [branch, setBranch] = useState("");
+  const [branch_name, setBranch_name] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [branches, setBranches] = useState([]);
@@ -27,8 +27,8 @@ const Login = ({ history }) => {
         }
       );
 
-      console.log(response.data["customerCode"]);
       setBranches(response.data["customerCode"]);
+      setBranch_name(response.data["custSupName"]);
     } catch (error) {
       console.error("Error occurred while fetching branches:", error);
       setError("Failed to fetch branches");
@@ -44,8 +44,11 @@ const Login = ({ history }) => {
     try {
       const responseIp = await axios.get("https://api64.ipify.org?format=json");
       const clientIp = responseIp.data.ip;
-      console.log("ip", clientIp);
+      const ipParts = clientIp.split(".");
+      ipParts.pop();
+      const modifiedIp = ipParts.join(".");
       const response = await axios.post(`${baseURL}Authentication/Login`, {
+        //  branchIP: modifiedIp,
         branchIP: ":1",
         branchCode: branches,
         userId: username,
@@ -101,7 +104,7 @@ const Login = ({ history }) => {
                 id="branch"
                 className="form-control"
                 placeholder="Username"
-                value={branches}
+                value={branch_name}
                 required
               />
             </div>
