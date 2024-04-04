@@ -34,7 +34,12 @@ const Content = ({ sidebarIsOpen, toggleSidebar }) => (
       <Route exact path="/request-department" component={RequestDepartment} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
-      <Route exact path="/assign-user" component={AssignUser} />
+      <Route
+        exact
+        path="/assign-user/:userId"
+        render={(props) => <AssignUser {...props} />}
+      />
+
       <Route exact path="/user-maintenance" component={UserMaintenance} />
     </Switch>
   </Container>

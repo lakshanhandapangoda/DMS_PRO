@@ -5,26 +5,36 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import {
   faEye,
+  faClock,
+  faShoppingCart,
   faCartPlus,
+  faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import Form from "react-bootstrap/Form";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function RequestApproval() {
   return (
     <div>
       <div className="d-flex justify-content-between mb-4">
-      <Link to="/ItemRequestPage">
-  <Button variant="outline-primary mx-4">
-    <FontAwesomeIcon icon={faCartPlus} className="mr-2" />
-    Add To Cart
-  </Button>
-</Link>
+        <Link to="/ItemRequestPage">
+          <Button variant="outline-primary mx-4">
+            <FontAwesomeIcon icon={faCartPlus} className="mr-2" />
+            Add To Cart
+          </Button>
+        </Link>
       </div>
       <div className="d-flex">
         <div className="flex-fill mr-3 mx-4">
           <Card>
-            <Card.Header as="h6">Unauthorized Cart</Card.Header>
+            <Card.Header as="h6">
+              <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
+              <FontAwesomeIcon
+                icon={faExclamationCircle}
+                className="text-danger me-2 mx-2"
+              />
+              Unauthorized Cart
+            </Card.Header>
             <Card.Body>
               <Table striped bordered hover>
                 <thead>
@@ -43,9 +53,7 @@ function RequestApproval() {
                     <td>@mdo</td>
                     <td>@mdo</td>
                     <td>
-            <Form.Check
-            inline
-            name="group1" className="mx-4"/>
+                      <Form.Check inline name="group1" className="mx-4" />
                     </td>
                   </tr>
                   <tr>
@@ -54,9 +62,7 @@ function RequestApproval() {
                     <td>@mdo</td>
                     <td>@mdo</td>
                     <td>
-                    <Form.Check
-            inline
-            name="group1" className="mx-4"/>
+                      <Form.Check inline name="group1" className="mx-4" />
                     </td>
                   </tr>
 
@@ -66,9 +72,7 @@ function RequestApproval() {
                     <td>@mdo</td>
                     <td>@mdo</td>
                     <td>
-                    <Form.Check
-            inline
-            name="group1" className="mx-4"/>
+                      <Form.Check inline name="group1" className="mx-4" />
                     </td>
                   </tr>
                 </tbody>
@@ -81,22 +85,25 @@ function RequestApproval() {
               </Form.Select>
 
               <div className="mt-4">
-            <Button variant="outline-primary " className="mr-3" >
-                Send Request
-            </Button>
-            <Button variant="outline-warning mx-2" className="mr-3  mx-2" >
-                Clear
-            </Button>
-            <Button variant="outline-success" className="mr-3"  >
-                Exit
-            </Button>
-        </div>
+                <Button variant="outline-primary " className="mr-3">
+                  Send Request
+                </Button>
+                <Button variant="outline-warning mx-2" className="mr-3  mx-2">
+                  Clear
+                </Button>
+                <Button variant="outline-success" className="mr-3">
+                  Exit
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </div>
         <div className="flex-fill ml-3 mx-4">
           <Card>
-            <Card.Header as="h6">Pending Delivery</Card.Header>
+            <Card.Header as="h6">
+              <FontAwesomeIcon icon={faClock} className="me-2 mx-2" />
+              Pending Delivery
+            </Card.Header>
             <Card.Body>
               <Table striped bordered hover>
                 <thead>
@@ -139,7 +146,6 @@ function RequestApproval() {
                       </Button>
                     </td>
                   </tr>
-                  
                 </tbody>
               </Table>
             </Card.Body>

@@ -46,7 +46,7 @@ const Login = ({ history }) => {
       const clientIp = responseIp.data.ip;
       const ipParts = clientIp.split(".");
       ipParts.pop();
-      const modifiedIp = ipParts.join(".");
+      // const modifiedIp = ipParts.join(".");
       const response = await axios.post(`${baseURL}Authentication/Login`, {
         //  branchIP: modifiedIp,
         branchIP: ":1",
@@ -55,6 +55,9 @@ const Login = ({ history }) => {
         password: password,
       });
       if (response.status === 200) {
+        localStorage.setItem("user_id", username);
+        localStorage.setItem("branchCode", branches);
+        localStorage.setItem("token", response.data.tokenString);
         setSuccess("Login successful");
         history.push("/");
       } else {

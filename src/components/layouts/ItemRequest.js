@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit, faSave , faPlus} from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faEdit,
+  faSave,
+  faPlus,
+  faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
@@ -15,18 +21,17 @@ function ItemRequest() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const handleAddToCart = () => {
-    const currentDate = new Date(); 
+    const currentDate = new Date();
     const newItem = {
       productId,
       quantity,
-      requestDate: currentDate.toLocaleString()
+      requestDate: currentDate.toLocaleString(),
     };
     setItems([...items, newItem]);
     setProductId("");
     setQuantity("");
     setRequestDate("");
     setShowAddModal(false); // Close the modal after adding to cart
-    
   };
 
   const handleDeleteItem = (index) => {
@@ -45,13 +50,19 @@ function ItemRequest() {
 
   return (
     <div className="container">
-      <Button variant="primary" className="mb-4" onClick={() => setShowAddModal(true)}>
-        Add Item  <FontAwesomeIcon icon={faPlus} className="mr-2" />
+      <Button
+        variant="primary"
+        className="mb-4"
+        onClick={() => setShowAddModal(true)}
+      >
+        Add Item <FontAwesomeIcon icon={faPlus} className="mr-2" />
       </Button>
 
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
         <Modal.Header>
-          <Modal.Title><h5>Add TO Cart</h5></Modal.Title>
+          <Modal.Title>
+            <h5>Add TO Cart</h5>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input
@@ -80,7 +91,10 @@ function ItemRequest() {
       </Modal>
 
       <Card className="mb-4">
-        <Card.Header as="h6">Cart</Card.Header>
+        <Card.Header as="h6">
+          <FontAwesomeIcon icon={faShoppingCart} className="me-2 mx-2" />
+          Cart
+        </Card.Header>
         <Card.Body>
           <div className="table-responsive">
             <Table striped bordered hover>

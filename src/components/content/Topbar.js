@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAlignLeft, faBell, faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
-import { Switch, Route, Link } from "react-router-dom";
-import Login from '../Auth/Login';
+import {
+  faAlignLeft,
+  faBell,
+  faSearch,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 import {
   Navbar,
   Button,
@@ -18,7 +22,7 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from "reactstrap";
 
 const Topbar = ({ toggleSidebar }) => {
@@ -30,13 +34,22 @@ const Topbar = ({ toggleSidebar }) => {
 
   return (
     <Navbar
-    // color="info" // Set the background color
-    dark // Set text color to light
+      // color="info" // Set the background color
+      dark // Set text color to light
       className="navbar shadow-sm p-3 mb-4  rounded"
       expand="md"
-      style={{ position: "sticky", top: 0, zIndex: 1000 ,backgroundColor: "#070f52"}}
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        backgroundColor: "#070f52",
+      }}
     >
-      <Button color="info" onClick={toggleSidebar} style={{ backgroundColor: "#848ed9" }}>
+      <Button
+        color="info"
+        onClick={toggleSidebar}
+        style={{ backgroundColor: "#848ed9" }}
+      >
         <FontAwesomeIcon icon={faAlignLeft} />
       </Button>
       <NavbarToggler onClick={toggleTopbar} />
@@ -52,15 +65,15 @@ const Topbar = ({ toggleSidebar }) => {
               <Input placeholder="Search" />
             </InputGroup>
           </NavItem>
-          <NavItem className="mx-4 icon-wrapper" >
-          <NavLink href="#" >
-              <FontAwesomeIcon icon={faBell} className="bell-icon"/>
+          <NavItem className="mx-4 icon-wrapper">
+            <NavLink href="#">
+              <FontAwesomeIcon icon={faBell} className="bell-icon" />
             </NavLink>
           </NavItem>
-          <NavItem className="mx-2 icon-wrapper" >
+          <NavItem className="mx-2 icon-wrapper">
             <Dropdown isOpen={userDropdownOpen} toggle={toggleUserDropdown}>
               <DropdownToggle nav style={{ borderRadius: "50%" }}>
-                <FontAwesomeIcon icon={faUser} className="bell-icon"/>
+                <FontAwesomeIcon icon={faUser} className="bell-icon" />
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>

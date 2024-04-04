@@ -1,68 +1,137 @@
-
-import React, { useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
-import { faArrowLeft ,  faArrowRight ,faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Card, Form } from "react-bootstrap";
+import { Alert } from "react-bootstrap";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faSave,
+  faTimes,
+  faCogs,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import baseURL from "./apiConfig";
+import { useLocation } from "react-router-dom";
 
 const AssignUser = () => {
-  const [availableRoles, setAvailableRoles] = useState([
-    { id: 1, name: "Admin1" },
-    { id: 2, name: "Manager1" },
-    { id: 3, name: "Employee1" },
-    { id: 4, name: "Guest1" },
-    { id: 5, name: "Admin" },
-    { id: 6, name: "Manager" },
-    { id: 7, name: "Employee" },
-    { id: 8, name: "Guest" },
-  ]);
-  const [assignedRoles, setAssignedRoles] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const location = useLocation();
+  const { user } = location.state;
+
+  const [availableFunction, setAvailableFunction] = useState([]);
+  const [assignedFunction, setAssignedFunction] = useState([]);
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
   const [userType, setUserType] = useState("");
   const [selectedModule, setSelectedModule] = useState("");
+  const [assignedModules, setAssignedModules] = useState([]);
 
-  const handleRoleSelect = (role) => {
-    setAvailableRoles((prevRoles) =>
-      prevRoles.filter((r) => r.id !== role.id)
-    );
-    setAssignedRoles((prevRoles) => [...prevRoles, role]);
-  };
+  useEffect(() => {
+    if (user) {
+      setUserId(user.userId);
+      setUserName(user.userName);
+      setUserType(user.userType);
 
-  const handleRoleRemove = (role) => {
-    setAssignedRoles((prevRoles) =>
-      prevRoles.filter((r) => r.id !== role.id)
-    );
-    setAvailableRoles((prevRoles) => [...prevRoles, role]);
+      const fetchAssignedModules = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `${baseURL}AppUser/GetAssignedModules/${user.userId}/${user.branchCode}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setAssignedModules(response.data);
+
+          for (const module of response.data) {
+            const functionResponse = await axios.get(
+              `${baseURL}AppUser/GetAppFunctionsByModule/${module.moduleId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            setAssignedFunction((prevFunctions) => [
+              ...prevFunctions,
+              ...functionResponse.data,
+            ]);
+          }
+        } catch (error) {
+          console.error("Error fetching assigned modules:", error);
+        }
+      };
+
+      fetchAssignedModules();
+
+      const fetchAppModulesForCombo = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `${baseURL}AppUser/GetAppModulesForCombo`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setAssignedModules(response.data);
+        } catch (error) {
+          console.error("Error fetching app modules for combo:", error);
+        }
+      };
+
+      fetchAppModulesForCombo();
+    }
+  }, [user]);
+
+  const handleModuleChange = async (event) => {
+    const moduleValue = event.target.value;
+    setSelectedModule(moduleValue);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${baseURL}AppUser/GetAppFunctionsByModule/${moduleValue}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setAvailableFunction(response.data);
+    } catch (error) {
+      console.error("Error fetching available functions:", error);
+    }
   };
 
   const handleMoveToAssigned = () => {
-    // Move selected roles to assigned roles
-    const selectedRoles = availableRoles.filter((role) => role.selected);
-    setAssignedRoles((prevRoles) => [...prevRoles, ...selectedRoles]);
-    setAvailableRoles((prevRoles) =>
+    const selectedRoles = availableFunction.filter((role) => role.selected);
+    setAssignedFunction((prevRoles) => [...prevRoles, ...selectedRoles]);
+    setAvailableFunction((prevRoles) =>
       prevRoles.filter((role) => !role.selected)
     );
   };
 
   const handleMoveToAvailable = () => {
-    // Move selected roles to available roles
-    const selectedRoles = assignedRoles.filter((role) => role.selected);
-    setAvailableRoles((prevRoles) => [...prevRoles, ...selectedRoles]);
-    setAssignedRoles((prevRoles) =>
+    const selectedRoles = assignedFunction.filter((role) => role.selected);
+    setAvailableFunction((prevRoles) => [...prevRoles, ...selectedRoles]);
+    setAssignedFunction((prevRoles) =>
       prevRoles.filter((role) => !role.selected)
     );
   };
 
   const handleSelectRole = (role, grid) => {
     if (grid === "available") {
-      setAvailableRoles((prevRoles) =>
+      setAvailableFunction((prevRoles) =>
         prevRoles.map((r) =>
           r.id === role.id ? { ...r, selected: !r.selected } : r
         )
       );
     } else if (grid === "assigned") {
-      setAssignedRoles((prevRoles) =>
+      setAssignedFunction((prevRoles) =>
         prevRoles.map((r) =>
           r.id === role.id ? { ...r, selected: !r.selected } : r
         )
@@ -70,18 +139,111 @@ const AssignUser = () => {
     }
   };
 
-  const handleModuleChange = (e) => {
-    setSelectedModule(e.target.value);
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const postData = {
+        oUserAppFunction: {
+          userId: userId,
+          branchCode: user.branchCode,
+          appId: 1,
+          functionId: assignedFunction.map((role) => role.functionId).join(),
+          createdBy: userId,
+          createdDateTime: new Date().toISOString(),
+          createdWorkStation: ":1",
+          modifiedBy: userId,
+          modifiedDateTime: new Date().toISOString(),
+          modifiedWorkStation: ":1",
+        },
+      };
+
+      const response = await axios.post(
+        `${baseURL}AppUser/PostUserFunctions`,
+        postData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("POST request successful:", response.data);
+      setShowAlert({
+        type: "success",
+        message: "Your request was processed successfully.",
+      });
+      setTimeout(() => setShowAlert(false), 3000);
+    } catch (error) {
+      setShowAlert({
+        type: "error",
+        message: "An error occurred while processing your request.",
+      });
+      setTimeout(() => setShowAlert(false), 3000);
+      console.error("Error posting user functions:", error);
+    }
   };
 
-  const handleUserTypeChange = (e) => {
-    setUserType(e.target.value);
+  const handleCancel = () => {
+    // Reset state values or perform any other cancel actions
+    setUserId("");
+    setUserName("");
+    setUserType("");
+    setSelectedModule("");
+    setAvailableFunction([]);
+    setAssignedFunction([]);
   };
 
+  /////////
   return (
     <div className="container">
       <Card className="mb-4">
-        <Card.Header as="h6">Assign User Roles</Card.Header>
+        <Card.Header as="h6">
+          <FontAwesomeIcon icon={faCogs} className="me-2 mx-2" />
+          Assign User Function
+        </Card.Header>
+        {/* Display the alert when showAlert is true */}
+        {showAlert && (
+          <div
+            style={{
+              position: "fixed",
+              top: "8%",
+              right: "50px",
+              transform: "translateY(-50%)",
+              zIndex: 9999,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor:
+                  showAlert.type === "success" ? "#d4edda" : "#f8d7da",
+                color: showAlert.type === "success" ? "#155724" : "#721c24",
+                padding: "10px",
+                borderRadius: "5px",
+                boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.5)",
+              }}
+            >
+              <strong>
+                {showAlert.type === "success" ? "Success:" : "Error:"}
+              </strong>{" "}
+              {showAlert.message}
+              <button
+                type="button"
+                className="btn-close"
+                aria-label="Close"
+                onClick={() => setShowAlert(false)}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              ></button>
+            </div>
+          </div>
+        )}
+
         <Card.Body>
           <Form>
             <div className="row">
@@ -108,22 +270,17 @@ const AssignUser = () => {
                 </Form.Group>
               </div>
             </div>
-  
+
             <div className="row">
               <div className="col-md-6">
                 <Form.Group className="mb-3" controlId="userType">
                   <Form.Label>User Type</Form.Label>
                   <Form.Control
-                    as="select"
-                    value={userType}
-                    onChange={handleUserTypeChange}
-                  >
-                    <option value="">Select user type</option>
-                    <option value="admin">Admin</option>
-                    <option value="manager">Manager</option>
-                    <option value="employee">Employee</option>
-                    <option value="guest">Guest</option>
-                  </Form.Control>
+                    type="text"
+                    placeholder="Enter user type"
+                    value={`Grade ${userType} Officer`}
+                    onChange={(e) => setUserType(e.target.value)}
+                  />
                 </Form.Group>
               </div>
               <div className="col-md-6">
@@ -134,23 +291,33 @@ const AssignUser = () => {
                     value={selectedModule}
                     onChange={handleModuleChange}
                   >
-                    <option value="">Select module</option>
-                    {/* Add your module options here */}
+                    {assignedModules.map((module) => (
+                      <option
+                        key={module.value}
+                        value={module.value}
+                        style={{ color: "black" }}
+                      >
+                        {module.text}
+                      </option>
+                    ))}
                   </Form.Control>
                 </Form.Group>
               </div>
             </div>
           </Form>
-  
+
           <div className="row">
             <div className="col-md-6">
-              <div className="card" style={{ maxHeight: "300px", overflowY: "auto" }}>
+              <div
+                className="card"
+                style={{ maxHeight: "300px", overflowY: "auto" }}
+              >
                 <div className="card-header bg-primary text-white">
                   Available Function
                 </div>
                 <div className="card-body">
                   <ul className="list-group">
-                    {availableRoles.map((role) => (
+                    {availableFunction.map((role) => (
                       <li
                         key={role.id}
                         className={`list-group-item ${
@@ -158,7 +325,7 @@ const AssignUser = () => {
                         }`}
                         onClick={() => handleSelectRole(role, "available")}
                       >
-                        {role.name}
+                        {role.functionName}
                       </li>
                     ))}
                   </ul>
@@ -166,13 +333,16 @@ const AssignUser = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <div className="card" style={{ maxHeight: "300px", overflowY: "auto" }}>
+              <div
+                className="card"
+                style={{ maxHeight: "300px", overflowY: "auto" }}
+              >
                 <div className="card-header bg-secondary text-white">
                   Assigned Function
                 </div>
                 <div className="card-body">
                   <ul className="list-group">
-                    {assignedRoles.map((role) => (
+                    {assignedFunction.map((role) => (
                       <li
                         key={role.id}
                         className={`list-group-item ${
@@ -180,7 +350,7 @@ const AssignUser = () => {
                         }`}
                         onClick={() => handleSelectRole(role, "assigned")}
                       >
-                        {role.name}
+                        {role.functionName}
                       </li>
                     ))}
                   </ul>
@@ -188,14 +358,14 @@ const AssignUser = () => {
               </div>
             </div>
           </div>
-  
+
           <div className="row mt-4">
             <div className="col-md-6 d-flex justify-content-end">
               <button
                 className="btn btn-primary"
                 onClick={handleMoveToAssigned}
               >
-                 <FontAwesomeIcon icon={faArrowRight} />
+                <FontAwesomeIcon icon={faArrowRight} />
               </button>
             </div>
             <div className="col-md-6">
@@ -203,35 +373,32 @@ const AssignUser = () => {
                 className="btn btn-secondary float-end"
                 onClick={handleMoveToAvailable}
               >
-             <FontAwesomeIcon icon={faArrowLeft} />    
+                <FontAwesomeIcon icon={faArrowLeft} />
               </button>
             </div>
           </div>
-  
-          <div className="row mt-4">
-          <div className="col-md-6">
-    <div className="d-flex justify-content-start">
-      {/* Save button */}
-      <button className="btn btn-success me-2 mx-2">
-        <FontAwesomeIcon icon={faSave} className="me-1 mx-2" />
-        Save
-      </button>
-      {/* Cancel button */}
-      <button className="btn btn-danger">
-        <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
-        Cancel
-      </button>
-    </div>
-  </div>
-</div>
 
-  
+          <div className="row mt-4">
+            <div className="col-md-6">
+              <div className="d-flex justify-content-start">
+                <button
+                  className="btn btn-success me-2 mx-2"
+                  onClick={handleSubmit}
+                >
+                  <FontAwesomeIcon icon={faSave} className="me-1 mx-2" />
+                  Save
+                </button>
+                <button className="btn btn-danger" onClick={handleCancel}>
+                  <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </Card.Body>
       </Card>
     </div>
   );
-  
-  
-                    };
-                    export default AssignUser;
-  
+};
+
+export default AssignUser;

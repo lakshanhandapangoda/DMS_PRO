@@ -14,8 +14,8 @@
     "react": "^16.8.6",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.1",
-    "react-scripts": "^3.0.1",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "^5.0.1",
     "reactstrap": "^6.4.0"
   },
   "scripts": {
@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-router": "^5.1.20",
     "husky": "^4.2.5",
     "prettier": "2.0.5",
     "pretty-quick": "^2.0.1"

@@ -3,7 +3,15 @@ import Table from "react-bootstrap/Table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { faEdit, faTrash, faEye, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faTrash,
+  faEye,
+  faCartPlus,
+  faShoppingCart,
+  faExclamationCircle,
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -13,7 +21,7 @@ function RequestDepartment() {
   const [unauthorizedData, setUnauthorizedData] = useState([
     { productId: "1", productName: "Product 1", uom: "Unit", quantity: 5 },
     { productId: "2", productName: "Product 2", uom: "Unit", quantity: 10 },
-    { productId: "3", productName: "Product 3", uom: "Unit", quantity: 8 }
+    { productId: "3", productName: "Product 3", uom: "Unit", quantity: 8 },
   ]);
 
   const [editIndex, setEditIndex] = useState(null);
@@ -51,10 +59,10 @@ function RequestDepartment() {
     setUnauthorizedData(newData);
   };
 
-  const [pendingDeliveryData, setPendingDeliveryData] = useState([
+  const [pendingDeliveryData] = useState([
     { refNo: "A123", date: "2024-03-21", delivery: "Delivery 1" },
     { refNo: "B456", date: "2024-03-22", delivery: "Delivery 2" },
-    { refNo: "C789", date: "2024-03-23", delivery: "Delivery 3" }
+    { refNo: "C789", date: "2024-03-23", delivery: "Delivery 3" },
   ]);
 
   return (
@@ -70,7 +78,14 @@ function RequestDepartment() {
       <div className="d-flex">
         <div className="flex-fill mr-3 mx-4">
           <Card>
-            <Card.Header as="h6">Unauthorized Cart</Card.Header>
+            <Card.Header as="h6">
+              <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
+              <FontAwesomeIcon
+                icon={faExclamationCircle}
+                className="text-danger me-2 mx-2"
+              />
+              Unauthorized Cart
+            </Card.Header>
             <Card.Body>
               <Table striped bordered hover>
                 <thead>
@@ -115,7 +130,10 @@ function RequestDepartment() {
         </div>
         <div className="flex-fill ml-3 mx-4">
           <Card>
-            <Card.Header as="h6">Pending Delivery</Card.Header>
+            <Card.Header as="h6">
+              <FontAwesomeIcon icon={faClock} className="me-2 mx-2" />
+              Pending Delivery
+            </Card.Header>
             <Card.Body>
               <Table striped bordered hover>
                 <thead>
@@ -137,7 +155,6 @@ function RequestDepartment() {
                           variant="primary"
                           size="sm"
                           className="mr-2 mx-2"
-                         
                         >
                           <FontAwesomeIcon icon={faEye} />
                         </Button>
@@ -153,8 +170,10 @@ function RequestDepartment() {
 
       {/* Edit Modal */}
       <Modal show={showEditModal} onHide={handleCloseEditModal}>
-        <Modal.Header >
-          <Modal.Title><h5>Edit Item</h5></Modal.Title>
+        <Modal.Header>
+          <Modal.Title>
+            <h5>Edit Item</h5>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group controlId="productId">
