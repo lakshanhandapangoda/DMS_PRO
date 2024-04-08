@@ -47,17 +47,15 @@ const AssignUser = () => {
 
           for (const module of response.data) {
             const functionResponse = await axios.get(
-              `${baseURL}AppUser/GetAppFunctionsByModule/${module.moduleId}`,
+              `${baseURL}AppUser/GetAssignedFunctions/${user.userId}/${module.moduleId}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
               }
             );
-            setAssignedFunction((prevFunctions) => [
-              ...prevFunctions,
-              ...functionResponse.data,
-            ]);
+            console.log(functionResponse.data);
+            setAssignedFunction(functionResponse.data);
           }
         } catch (error) {
           console.error("Error fetching assigned modules:", error);
@@ -142,20 +140,19 @@ const AssignUser = () => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
-      const postData = {
-        oUserAppFunction: {
-          userId: userId,
-          branchCode: user.branchCode,
-          appId: 1,
-          functionId: assignedFunction.map((role) => role.functionId).join(),
-          createdBy: userId,
-          createdDateTime: new Date().toISOString(),
-          createdWorkStation: ":1",
-          modifiedBy: userId,
-          modifiedDateTime: new Date().toISOString(),
-          modifiedWorkStation: ":1",
-        },
-      };
+      const postData = assignedFunction.map((role) => ({
+        userId: userId,
+        branchCode: user.branchCode,
+        appId: 0,
+        functionId: role.functionId,
+        createdBy: userId,
+        moduleId: role.moduleId,
+        createdDateTime: new Date().toISOString(),
+        createdWorkStation: ":1",
+        modifiedBy: userId,
+        modifiedDateTime: new Date().toISOString(),
+        modifiedWorkStation: ":1",
+      }));
 
       const response = await axios.post(
         `${baseURL}AppUser/PostUserFunctions`,
@@ -208,8 +205,8 @@ const AssignUser = () => {
           <div
             style={{
               position: "fixed",
-              top: "8%",
-              right: "50px",
+              top: "55px",
+              right: "40px",
               transform: "translateY(-50%)",
               zIndex: 9999,
             }}
@@ -234,6 +231,7 @@ const AssignUser = () => {
                 aria-label="Close"
                 onClick={() => setShowAlert(false)}
                 style={{
+                  height: "40px",
                   marginLeft: "10px",
                   backgroundColor: "transparent",
                   border: "none",
@@ -251,6 +249,7 @@ const AssignUser = () => {
                 <Form.Group className="mb-3" controlId="userId">
                   <Form.Label>User ID</Form.Label>
                   <Form.Control
+                    readOnly
                     type="text"
                     placeholder="Enter user ID"
                     value={userId}
@@ -262,6 +261,7 @@ const AssignUser = () => {
                 <Form.Group className="mb-3" controlId="userName">
                   <Form.Label>User Name</Form.Label>
                   <Form.Control
+                    readOnly
                     type="text"
                     placeholder="Enter user name"
                     value={userName}
@@ -276,6 +276,7 @@ const AssignUser = () => {
                 <Form.Group className="mb-3" controlId="userType">
                   <Form.Label>User Type</Form.Label>
                   <Form.Control
+                    readOnly
                     type="text"
                     placeholder="Enter user type"
                     value={`Grade ${userType} Officer`}
