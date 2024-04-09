@@ -46,6 +46,7 @@ const Login = ({ history }) => {
       const clientIp = responseIp.data.ip;
       const ipParts = clientIp.split(".");
       ipParts.pop();
+
       // const modifiedIp = ipParts.join(".");
       const response = await axios.post(`${baseURL}Authentication/Login`, {
         //  branchIP: modifiedIp,
@@ -60,12 +61,13 @@ const Login = ({ history }) => {
         localStorage.setItem("token", response.data.tokenString);
         setSuccess("Login successful");
         history.push("/");
-      } else {
-        setError("Login failed");
       }
     } catch (error) {
-      console.error("Error occurred:", error);
-      setError("An error occurred while attempting to login");
+      console.log("Error occurred:", error.response.data);
+      setError(error.response.data.toString());
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     }
   };
 

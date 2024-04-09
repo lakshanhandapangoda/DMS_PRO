@@ -26,7 +26,7 @@ const Register = () => {
         `${baseURL}Authentication/PostUser`,
         {
           oUserForRegisterDto: {
-            userType: userType.toString(),
+            userType: parseFloat(userType),
             userStatus: 0,
             noOfAttempts: 0,
             emailAddress: "",
@@ -55,8 +55,10 @@ const Register = () => {
         setTimeout(() => setSuccess(null), 10000);
       }
     } catch (error) {
-      setError("An error occurred while registering: " + error.message);
-      setTimeout(() => setError(null), 10000);
+      setError(error.response.data.toString());
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     }
   };
 
@@ -134,8 +136,8 @@ const Register = () => {
                 required
               >
                 <option value="">Select User Type</option>
-                <option value="manager">Manager</option>
-                <option value="officer">Officer</option>
+                <option value="1">Manager</option>
+                <option value="2">Officer</option>
               </select>
             </div>
           </div>

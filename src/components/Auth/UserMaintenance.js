@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal"; // Import modal component
 import baseURL from "./apiConfig";
 import Card from "react-bootstrap/Card";
+import { useHistory } from "react-router-dom";
 import {
   faUser,
   faPlus,
@@ -14,25 +15,25 @@ import {
   faUserAltSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import Pagination from "react-bootstrap/Pagination";
 
 function UserMaintenance() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
+  const [itemsPerPage] = useState(6);
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
   // Define fetchUsers outside useEffect
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
       const branch = localStorage.getItem("branchCode");
-      if (!token) {
-        window.location.href = "/login";
-        return;
-      }
+
       const response = await axios.get(`${baseURL}AppUser/GetUsers/${branch}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,6 +42,10 @@ function UserMaintenance() {
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
+
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
     }
   };
 
@@ -61,7 +66,7 @@ function UserMaintenance() {
       user.branchCode.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const updateUserStatus = async () => {
+  const updateUserStatus = async (userId, branchCode, userStatus) => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
@@ -69,7 +74,7 @@ function UserMaintenance() {
         {
           userId: userId,
           branchCode: branchCode,
-          userStatus: newStatus,
+          userStatus: userStatus,
         },
         {
           headers: {
@@ -88,9 +93,12 @@ function UserMaintenance() {
       });
       setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
       setShowAlert({
         type: "error",
-        message: "An error occurred while processing your request.",
+        message: error.response.data.toString(),
       });
       setTimeout(() => setShowAlert(false), 3000);
       console.error("An error occurred while processing your request.", error);
@@ -137,14 +145,25 @@ function UserMaintenance() {
       });
       setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
       setShowAlert({
         type: "error",
-        message: "An error occurred while processing your request.",
+        message: error.response.data.toString(),
       });
       setTimeout(() => setShowAlert(false), 3000);
       console.error("An error occurred while processing your request.", error);
     }
   };
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const visibleUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   return (
     <div>
@@ -228,7 +247,7 @@ function UserMaintenance() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user, index) => (
+                  {visibleUsers.map((user, index) => (
                     <tr key={index}>
                       <td>{user.userId}</td>
                       <td>{user.userName}</td>
@@ -288,6 +307,29 @@ function UserMaintenance() {
                   ))}
                 </tbody>
               </Table>
+
+              <div>
+                {/* Your existing JSX code */}
+                <Pagination>
+                  <Pagination.Prev
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                  {[...Array(totalPages)].map((_, index) => (
+                    <Pagination.Item
+                      key={index + 1}
+                      active={index + 1 === currentPage}
+                      onClick={() => handlePageChange(index + 1)}
+                    >
+                      {index + 1}
+                    </Pagination.Item>
+                  ))}
+                  <Pagination.Next
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={indexOfLastItem >= filteredUsers.length}
+                  />
+                </Pagination>
+              </div>
             </Card.Body>
           </Card>
         </div>
@@ -299,30 +341,32 @@ function UserMaintenance() {
           <Modal.Title>Reset Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="mb-3">
-            <label htmlFor="oldPassword" className="form-label">
-              Old Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="oldPassword"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="newPassword" className="form-label">
-              New Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="newPassword"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
+          <form>
+            <div className="mb-3">
+              <label htmlFor="oldPassword" className="form-label">
+                Old Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="oldPassword"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="newPassword" className="form-label">
+                New Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="newPassword"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+          </form>
         </Modal.Body>
 
         <Modal.Footer>

@@ -43,8 +43,9 @@ const AssignUser = () => {
               },
             }
           );
-          setAssignedModules(response.data);
-
+          // setAssignedModules(response.data);
+          // console.log('mod',response.data);
+          let assignedFunctions = [];
           for (const module of response.data) {
             const functionResponse = await axios.get(
               `${baseURL}AppUser/GetAssignedFunctions/${user.userId}/${module.moduleId}`,
@@ -54,9 +55,13 @@ const AssignUser = () => {
                 },
               }
             );
-            console.log(functionResponse.data);
-            setAssignedFunction(functionResponse.data);
+            console.log("function", functionResponse.data);
+            assignedFunctions = [
+              ...assignedFunctions,
+              ...functionResponse.data,
+            ];
           }
+          setAssignedFunction(assignedFunctions);
         } catch (error) {
           console.error("Error fetching assigned modules:", error);
         }
@@ -125,13 +130,13 @@ const AssignUser = () => {
     if (grid === "available") {
       setAvailableFunction((prevRoles) =>
         prevRoles.map((r) =>
-          r.id === role.id ? { ...r, selected: !r.selected } : r
+          r.functionId === role.functionId ? { ...r, selected: !r.selected } : r
         )
       );
     } else if (grid === "assigned") {
       setAssignedFunction((prevRoles) =>
         prevRoles.map((r) =>
-          r.id === role.id ? { ...r, selected: !r.selected } : r
+          r.functionId === role.functionId ? { ...r, selected: !r.selected } : r
         )
       );
     }
@@ -173,10 +178,14 @@ const AssignUser = () => {
       });
       setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
       setShowAlert({
         type: "error",
-        message: "An error occurred while processing your request.",
+        message: error.response.data.toString(),
       });
+
       setTimeout(() => setShowAlert(false), 3000);
       console.error("Error posting user functions:", error);
     }
@@ -320,7 +329,7 @@ const AssignUser = () => {
                   <ul className="list-group">
                     {availableFunction.map((role) => (
                       <li
-                        key={role.id}
+                        key={role.functionId}
                         className={`list-group-item ${
                           role.selected ? "active" : ""
                         }`}
@@ -345,7 +354,7 @@ const AssignUser = () => {
                   <ul className="list-group">
                     {assignedFunction.map((role) => (
                       <li
-                        key={role.id}
+                        key={role.functionId}
                         className={`list-group-item ${
                           role.selected ? "active" : ""
                         }`}
