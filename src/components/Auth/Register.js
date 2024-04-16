@@ -26,8 +26,7 @@ const Register = () => {
         `${baseURL}Authentication/PostUser`,
         {
           oUserForRegisterDto: {
-            userType: parseFloat(userType),
-            userStatus: 0,
+            userStatus: 1,
             noOfAttempts: 0,
             emailAddress: "",
             createdBy: username.toString(),
@@ -38,6 +37,7 @@ const Register = () => {
             modifiedWorkStation: "",
           },
           UserId: userId,
+          userType: parseFloat(userType),
           Password: password,
           UserName: username,
           BranchCode: "0001010",

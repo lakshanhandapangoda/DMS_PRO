@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
@@ -11,27 +11,91 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
+import axios from "axios";
+import baseURL from "../Auth/apiConfig";
 
 function ItemRequest() {
   const [items, setItems] = useState([]);
   const [productId, setProductId] = useState("");
   const [requestDate, setRequestDate] = useState("");
+  const [productDescription, setProductDescription] = useState("");
   const [quantity, setQuantity] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [productList, setProductList] = useState([]);
+  const [showAlert, setShowAlert] = useState({ type: "", message: "" });
+
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("user_id");
+    if (storedUserName) {
+      setUserName(storedUserName);
+    }
+
+    const fetchProductList = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${baseURL}BranchRequestItems/GetAllActiveProductList`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setProductList(response.data);
+      } catch (error) {
+        if (error.response.status === 401) {
+          window.location.href = "/login";
+        }
+        setShowAlert({
+          type: "error",
+          message: error.response.data.toString(),
+        });
+        setTimeout(() => setShowAlert(false), 3000);
+        console.error("Error fetching product list:", error);
+      }
+    };
+
+    fetchProductList();
+  }, []);
 
   const handleAddToCart = () => {
     const currentDate = new Date();
-    const newItem = {
-      productId,
-      quantity,
-      requestDate: currentDate.toLocaleString(),
-    };
-    setItems([...items, newItem]);
-    setProductId("");
-    setQuantity("");
-    setRequestDate("");
-    setShowAddModal(false); // Close the modal after adding to cart
+    const selectedProduct = productList.find(
+      (product) => product.productId === productId
+    );
+
+    if (selectedProduct) {
+      const existingItemIndex = items.findIndex(
+        (item) => item.productId === selectedProduct.productId
+      );
+
+      if (existingItemIndex !== -1) {
+        const updatedItems = [...items];
+        updatedItems[existingItemIndex].quantity =
+          parseFloat(updatedItems[existingItemIndex].quantity) +
+          parseFloat(quantity);
+        setItems(updatedItems);
+      } else {
+        const newItem = {
+          productId: selectedProduct.productId,
+          productDescription: selectedProduct.productDescription,
+          quantity,
+          requestDate: currentDate.toLocaleString(),
+          uom: "SNG",
+          requestedBy: userName,
+        };
+        setItems([...items, newItem]);
+      }
+
+      setProductId("");
+      setQuantity("");
+      setRequestDate("");
+      setShowAddModal(false);
+    } else {
+      console.error("Selected product not found in the product list.");
+    }
   };
 
   const handleDeleteItem = (index) => {
@@ -48,8 +112,97 @@ function ItemRequest() {
     setEditIndex(null);
   };
 
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const branchCode = localStorage.getItem("branchCode");
+      const requestData = items.map((item) => ({
+        branchCode: branchCode,
+        productId: item.productId,
+        productDescription: item.productDescription || "",
+        uom: item.uom,
+        quantity: parseFloat(item.quantity),
+        requestBy: "admin",
+        requestDate: new Date(item.requestDate).toISOString(),
+        requestWorkStation: "::1",
+      }));
+
+      const response = await axios.post(
+        `${baseURL}BranchRequestItems/PostItemRequest`,
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setShowAlert({
+        type: "success",
+        message: "Request submited successful",
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      console.log("Request submited successful:", response.data);
+      setItems([]);
+    } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
+
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      console.error("Error during request:", error);
+    }
+  };
+
   return (
     <div className="container">
+      {showAlert.type && (
+        <div
+          style={{
+            position: "fixed",
+            top: "55px",
+            right: "40px",
+            transform: "translateY(-50%)",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor:
+                showAlert.type === "success" ? "#d4edda" : "#f8d7da",
+              color: showAlert.type === "success" ? "#155724" : "#721c24",
+              padding: "10px",
+              borderRadius: "5px",
+              boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.5)",
+            }}
+          >
+            <strong>
+              {showAlert.type === "success" ? "Success:" : "Error:"}
+            </strong>{" "}
+            {showAlert.message}
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Close"
+              onClick={() => setShowAlert({ type: "", message: "" })}
+              style={{
+                height: "40px",
+                marginLeft: "10px",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            ></button>
+          </div>
+        </div>
+      )}
+
       <Button
         variant="primary"
         className="mb-4"
@@ -61,17 +214,22 @@ function ItemRequest() {
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
         <Modal.Header>
           <Modal.Title>
-            <h5>Add TO Cart</h5>
+            <h5>Add To Cart</h5>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input
-            type="text"
+          <select
             className="form-control mb-2"
-            placeholder="Product ID"
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
-          />
+          >
+            <option value="">Select Product</option>
+            {productList.map((product) => (
+              <option key={product.productId} value={product.productId}>
+                {product.productId}
+              </option>
+            ))}
+          </select>
           <input
             type="number"
             className="form-control mb-2"
@@ -81,11 +239,19 @@ function ItemRequest() {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowAddModal(false);
+              setProductId("");
+              setQuantity("");
+            }}
+          >
             Close
           </Button>
-          <Button variant="primary" onClick={handleAddToCart}>
-            Save to Cart
+          <Button variant="success" onClick={handleAddToCart}>
+            <FontAwesomeIcon icon={faSave} className="me-2 mx-2" />
+            Save
           </Button>
         </Modal.Footer>
       </Modal>
@@ -96,7 +262,10 @@ function ItemRequest() {
           Cart
         </Card.Header>
         <Card.Body>
-          <div className="table-responsive">
+          <div
+            className="table-responsive"
+            style={{ maxHeight: "400px", overflowY: "auto" }}
+          >
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -132,7 +301,10 @@ function ItemRequest() {
                         item.productId
                       )}
                     </td>
-                    <td>Description</td>
+                    <td style={{ maxWidth: "200px" }}>
+                      {item.productDescription}
+                    </td>
+
                     <td>
                       {editIndex === index ? (
                         <input
@@ -153,9 +325,8 @@ function ItemRequest() {
                         item.quantity
                       )}
                     </td>
-
-                    <td>UOM</td>
-                    <td>Requested By</td>
+                    <td>{item.uom}</td>
+                    <td>{item.requestedBy}</td>
                     <td>{item.requestDate}</td>
                     <td>
                       {editIndex === index ? (
@@ -190,6 +361,14 @@ function ItemRequest() {
               </tbody>
             </Table>
           </div>
+          <Button
+            className="mt-4"
+            variant="primary"
+            onClick={handleSubmit}
+            style={{ display: items.length === 0 ? "none" : "block" }}
+          >
+            Submit
+          </Button>
         </Card.Body>
       </Card>
     </div>
