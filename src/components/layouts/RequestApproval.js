@@ -18,6 +18,8 @@ function RequestApproval() {
   const [unauthorizedProducts, setUnauthorizedProducts] = useState([]);
   const [pendingDeliveries, setPendingDeliveries] = useState([]);
   const [deliveryTypes, setDeliveryTypes] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedDeliveryType, setSelectedDeliveryType] = useState("");
 
   useEffect(() => {
     const fetchUnauthorizedProducts = async () => {
@@ -77,6 +79,69 @@ function RequestApproval() {
     fetchDeliveryTypes();
   }, []);
 
+  const handleProductSelectionChange = (e, productId) => {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      setSelectedProducts([...selectedProducts, productId]);
+    } else {
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
+    }
+  };
+
+  const handleDeliveryTypeChange = (e) => {
+    setSelectedDeliveryType(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const branchCode = localStorage.getItem("branchCode");
+      const token = localStorage.getItem("token");
+      const user_id = localStorage.getItem("user_id");
+
+      const payload = unauthorizedProducts.map((product) => ({
+        branchFlag: 2,
+        branchCode: branchCode,
+        productId: product.productId,
+        productDescription: product.productDescription,
+        txUnitOfMeasure: product.txUnitOfMeasure,
+        quantity: product.quantity,
+        deliveryType: selectedDeliveryType,
+        createdBy: user_id,
+        authorizedBy: user_id,
+        createdWorkStation: "::1",
+        modifiedBy: user_id,
+        modifiedWorkStation: "::1",
+      }));
+
+      // Send POST request
+      const response = await axios.post(
+        `${baseURL}BranchRequestItems/PostRequestApproval`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Post request sent successfully:", response.data);
+
+      setSelectedProducts([]);
+      setSelectedDeliveryType("");
+    } catch (error) {
+      console.error("Error sending post request:", error);
+    }
+  };
+
+  const handleClear = () => {
+    setSelectedProducts([]);
+    setSelectedDeliveryType("");
+  };
+
+  const handleExit = () => {
+    // Handle exit logic here
+  };
+
   return (
     <div>
       <div className="d-flex justify-content-between mb-4">
@@ -123,14 +188,26 @@ function RequestApproval() {
                         <td>{product.txUnitOfMeasure}</td>
                         <td>{product.quantity}</td>
                         <td>
-                          <Form.Check inline name="group1" className="mx-4" />
+                          <Form.Check
+                            inline
+                            name="group1"
+                            className="mx-4"
+                            onChange={(e) =>
+                              handleProductSelectionChange(e, product.productId)
+                            }
+                          />
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </Table>
               </div>
-              <Form.Select aria-label="Default select example" className="mt-4">
+              <Form.Select
+                aria-label="Default select example"
+                className="mt-4"
+                onChange={handleDeliveryTypeChange}
+                value={selectedDeliveryType}
+              >
                 <option>Select delivery type</option>
                 {deliveryTypes.map((type, index) => (
                   <option key={index} value={type.deliveryTypeValue}>
@@ -140,13 +217,26 @@ function RequestApproval() {
               </Form.Select>
 
               <div className="mt-4">
-                <Button variant="outline-primary " className="mr-3">
+                <Button
+                  variant="outline-primary "
+                  className="mr-3"
+                  onClick={handleSubmit}
+                  disabled={!selectedProducts.length || !selectedDeliveryType}
+                >
                   Send Request
                 </Button>
-                <Button variant="outline-warning mx-2" className="mr-3  mx-2">
+                <Button
+                  variant="outline-warning mx-2"
+                  onClick={handleClear}
+                  className="mr-3  mx-2"
+                >
                   Clear
                 </Button>
-                <Button variant="outline-success" className="mr-3">
+                <Button
+                  variant="outline-success"
+                  onClick={handleExit}
+                  className="mr-3"
+                >
                   Exit
                 </Button>
               </div>
