@@ -254,7 +254,7 @@ const AssignUser = () => {
         <Card.Body>
           <Form>
             <div className="row">
-              <div className="col-md-6">
+              <div className="col-md-4">
                 <Form.Group className="mb-3" controlId="userId">
                   <Form.Label>User ID</Form.Label>
                   <Form.Control
@@ -266,7 +266,7 @@ const AssignUser = () => {
                   />
                 </Form.Group>
               </div>
-              <div className="col-md-6">
+              <div className="col-md-4">
                 <Form.Group className="mb-3" controlId="userName">
                   <Form.Label>User Name</Form.Label>
                   <Form.Control
@@ -278,22 +278,8 @@ const AssignUser = () => {
                   />
                 </Form.Group>
               </div>
-            </div>
 
-            <div className="row">
-              <div className="col-md-6">
-                <Form.Group className="mb-3" controlId="userType">
-                  <Form.Label>User Type</Form.Label>
-                  <Form.Control
-                    readOnly
-                    type="text"
-                    placeholder="Enter user type"
-                    value={`Grade ${userType} Officer`}
-                    onChange={(e) => setUserType(e.target.value)}
-                  />
-                </Form.Group>
-              </div>
-              <div className="col-md-6">
+              <div className="col-md-4">
                 <Form.Group className="mb-3" controlId="module">
                   <Form.Label>Module</Form.Label>
                   <Form.Control
@@ -301,6 +287,7 @@ const AssignUser = () => {
                     value={selectedModule}
                     onChange={handleModuleChange}
                   >
+                    <option>Select Module</option>
                     {assignedModules.map((module) => (
                       <option
                         key={module.value}
@@ -312,6 +299,21 @@ const AssignUser = () => {
                     ))}
                   </Form.Control>
                 </Form.Group>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6">
+                {/* <Form.Group className="mb-3" controlId="userType">
+                  <Form.Label>User Type</Form.Label>
+                  <Form.Control
+                    readOnly
+                    type="text"
+                    placeholder="Enter user type"
+                    value={`Grade ${userType} Officer`}
+                    onChange={(e) => setUserType(e.target.value)}
+                  />
+                </Form.Group> */}
               </div>
             </div>
           </Form>

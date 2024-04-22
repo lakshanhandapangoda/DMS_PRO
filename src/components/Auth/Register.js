@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faIdBadge } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faLock,
+  faIdBadge,
+  faBriefcase,
+} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
 
@@ -89,6 +94,26 @@ const Register = () => {
             <div className="input-group">
               <div className="input-group-prepend">
                 <span className="input-group-text">
+                  <FontAwesomeIcon icon={faBriefcase} />
+                </span>
+              </div>
+              <select
+                id="userType"
+                className="form-control"
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+                required
+              >
+                <option value="">Select User Type</option>
+                <option value="1">Manager</option>
+                <option value="2">Officer</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-group">
+            <div className="input-group">
+              <div className="input-group-prepend">
+                <span className="input-group-text">
                   <FontAwesomeIcon icon={faIdBadge} />
                 </span>
               </div>
@@ -121,26 +146,7 @@ const Register = () => {
               />
             </div>
           </div>
-          <div className="form-group">
-            <div className="input-group">
-              <div className="input-group-prepend">
-                <span className="input-group-text">
-                  <FontAwesomeIcon icon={faIdBadge} />
-                </span>
-              </div>
-              <select
-                id="userType"
-                className="form-control"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-                required
-              >
-                <option value="">Select User Type</option>
-                <option value="1">Manager</option>
-                <option value="2">Officer</option>
-              </select>
-            </div>
-          </div>
+
           <div className="form-group">
             <div className="input-group">
               <div className="input-group-prepend">

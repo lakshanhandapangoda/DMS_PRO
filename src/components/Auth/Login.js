@@ -91,7 +91,7 @@ const Login = ({ history }) => {
           </h4>
           <br />
           <h6 style={{ fontFamily: "Arial, sans-serif", fontSize: "14px" }}>
-            Sign In to Start Your Session
+            Sign In to Continue
           </h6>
         </div>
         {error && <div className="alert alert-danger">{error}</div>}

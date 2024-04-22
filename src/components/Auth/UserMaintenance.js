@@ -13,6 +13,7 @@ import {
   faPlus,
   faLock,
   faUserAltSlash,
+  faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
@@ -233,17 +234,15 @@ function UserMaintenance() {
                   </span>
                 </div>
               </div>
-              <Table striped bordered hover>
+              <Table striped bordered hover className="text-center">
                 <thead>
                   <tr>
                     <th>User ID</th>
                     <th>User Name</th>
-                    <th>Branch Code</th>
-                    <th>User Type</th>
-                    <th>User Status</th>
-                    <th>Assign Function</th>
-                    <th>Reset Password</th>
-                    <th>Active/Inactive</th>
+
+                    <th>Function</th>
+                    <th>Password</th>
+                    <th>Current Satus</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -251,9 +250,6 @@ function UserMaintenance() {
                     <tr key={index}>
                       <td>{user.userId}</td>
                       <td>{user.userName}</td>
-                      <td>{user.branchCode}</td>
-                      <td>Grade{user.userType}Oficer</td>
-                      <td>{user.userStatus === 1 ? "Active" : "Inactive"}</td>
 
                       <td>
                         <Link
@@ -299,8 +295,14 @@ function UserMaintenance() {
                             )
                           }
                         >
-                          <FontAwesomeIcon icon={faUserAltSlash} />{" "}
-                          {user.userStatus === 1 ? "Inactive" : "Active"}
+                          <FontAwesomeIcon
+                            icon={
+                              user.userStatus === 0
+                                ? faUserAltSlash // User is inactive
+                                : faUserAlt // User is active
+                            }
+                          />{" "}
+                          {user.userStatus === 0 ? "Inactive" : "Active"}
                         </Button>
                       </td>
                     </tr>
@@ -320,6 +322,7 @@ function UserMaintenance() {
                       key={index + 1}
                       active={index + 1 === currentPage}
                       onClick={() => handlePageChange(index + 1)}
+                      activeLabel=""
                     >
                       {index + 1}
                     </Pagination.Item>
