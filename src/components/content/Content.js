@@ -5,6 +5,7 @@ import { Switch, Route } from "react-router-dom";
 import ItemRequest from "../layouts/ItemRequest";
 import RequestApproval from "../layouts/RequestApproval";
 import RequestDepartment from "../layouts/RequestDepartment";
+import Home from "../layouts/Home";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 import AssignUser from "../Auth/AssignUser";
@@ -25,7 +26,7 @@ const Content = ({ sidebarIsOpen, toggleSidebar }) => (
   >
     <Topbar toggleSidebar={toggleSidebar} />
     <Switch>
-      <Route exact path="/" component={() => ""} />
+      <Route exact path="/" component={Home} />
       <Route exact path="/about" component={() => "About"} />
       <Route exact path="/Pages" component={() => "Pages"} />
 

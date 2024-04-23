@@ -19,13 +19,10 @@ import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 
 function UserMaintenance() {
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [itemsPerPage] = useState(6);
+  const [itemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -106,43 +103,24 @@ function UserMaintenance() {
     }
   };
 
-  const handleResetPassword = (user) => {
-    setSelectedUser(user);
-    setShowResetModal(true);
-  };
-
-  const handleCloseResetModal = () => {
-    setShowResetModal(false);
-    setOldPassword("");
-    setNewPassword("");
-  };
-
-  const handleConfirmResetPassword = async () => {
+  const handleResetPassword = async (user) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `${baseURL}Authentication/PasswordReset`,
-        {
-          userId: selectedUser.userId,
-          branchCode: selectedUser.branchCode,
-          password: oldPassword,
-          oldPassword: oldPassword,
-          newPassword: newPassword,
-          status: selectedUser.userStatus,
-        },
+        `${baseURL}AppUser/PasswordRest`,
+
+        [user.userId, user.branchCode],
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      handleCloseResetModal();
       fetchUsers();
-      console.log("Reset password for user successfully.");
+      console.log("Password reset request sent successfully.");
       setShowAlert({
         type: "success",
-        message: "Reset password for user successfully.",
+        message: "Password reset request sent successfully.",
       });
       setTimeout(() => setShowAlert(false), 3000);
     } catch (error) {
@@ -157,6 +135,7 @@ function UserMaintenance() {
       console.error("An error occurred while processing your request.", error);
     }
   };
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -239,7 +218,6 @@ function UserMaintenance() {
                   <tr>
                     <th>User ID</th>
                     <th>User Name</th>
-
                     <th>Function</th>
                     <th>Password</th>
                     <th>Current Satus</th>
@@ -261,7 +239,7 @@ function UserMaintenance() {
                           <Button
                             variant="outline-secondary"
                             size="sm"
-                            className="mr-2 mx-2"
+                            className="mr-2 mx-1"
                           >
                             <FontAwesomeIcon icon={faPlus} /> Assign
                           </Button>
@@ -271,7 +249,7 @@ function UserMaintenance() {
                         <Button
                           variant="outline-warning"
                           size="sm"
-                          className="mr-2 mx-2"
+                          className="mr-2 mx-1"
                           onClick={() => handleResetPassword(user)}
                         >
                           <FontAwesomeIcon icon={faLock} /> Reset
@@ -286,7 +264,7 @@ function UserMaintenance() {
                               : "outline-danger"
                           }
                           size="sm"
-                          className="mr-2 mx-2"
+                          className="mr-2 mx-1"
                           onClick={() =>
                             updateUserStatus(
                               user.userId,
@@ -337,50 +315,6 @@ function UserMaintenance() {
           </Card>
         </div>
       </div>
-
-      {/* Reset Password Modal */}
-      <Modal show={showResetModal} onHide={handleCloseResetModal}>
-        <Modal.Header>
-          <Modal.Title>Reset Password</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form>
-            <div className="mb-3">
-              <label htmlFor="oldPassword" className="form-label">
-                Old Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="oldPassword"
-                value={oldPassword}
-                onChange={(e) => setOldPassword(e.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="newPassword" className="form-label">
-                New Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </div>
-          </form>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseResetModal}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleConfirmResetPassword}>
-            Reset Password
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 }

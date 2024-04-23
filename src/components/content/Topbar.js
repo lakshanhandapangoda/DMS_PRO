@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAlignLeft,
   faBell,
-  faSearch,
+  faPowerOff,
   faUser,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -90,15 +90,10 @@ const Topbar = ({ toggleSidebar }) => {
             Welcome, {userName}
           </span>
 
-          <NavItem className="mx-4 icon-wrapper">
-            {/* <NavLink href="#">
-              <FontAwesomeIcon icon={faBell} className="bell-icon" />
-            </NavLink> */}
-          </NavItem>
           {isLoggedIn ? (
             <NavItem className="mx-2" style={{ borderRadius: "10px" }}>
               <Button color="link" onClick={handleLogout}>
-                <FontAwesomeIcon icon={faSignOutAlt} />
+                <FontAwesomeIcon icon={faPowerOff} />
               </Button>
             </NavItem>
           ) : (

@@ -266,6 +266,7 @@ const AssignUser = () => {
                   />
                 </Form.Group>
               </div>
+
               <div className="col-md-4">
                 <Form.Group className="mb-3" controlId="userName">
                   <Form.Label>User Name</Form.Label>

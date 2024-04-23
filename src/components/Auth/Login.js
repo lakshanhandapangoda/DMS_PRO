@@ -5,6 +5,8 @@ import { faUser, faLock, faBuilding } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
 import { withRouter } from "react-router-dom";
+import Home from "../layouts/Home";
+
 const Login = ({ history }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +14,7 @@ const Login = ({ history }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [branches, setBranches] = useState([]);
-
+  const [loginStatus, setLoginStatus] = useState(null);
   // Function to fetch and set the available branches
   const fetchBranches = async () => {
     try {
@@ -59,7 +61,17 @@ const Login = ({ history }) => {
         localStorage.setItem("user_id", username);
         localStorage.setItem("branchCode", branches);
         localStorage.setItem("token", response.data.tokenString);
+        localStorage.setItem("status", response.data.status);
         setSuccess("Login successful");
+        localStorage.setItem("loginStatus", 200);
+        history.push("/");
+      } else if (response.status === 202) {
+        localStorage.setItem("user_id", username);
+        localStorage.setItem("branchCode", branches);
+        localStorage.setItem("token", response.data.tokenString);
+        localStorage.setItem("status", response.data.status);
+        setSuccess("Login successful");
+        localStorage.setItem("loginStatus", response.status);
         history.push("/");
       }
     } catch (error) {

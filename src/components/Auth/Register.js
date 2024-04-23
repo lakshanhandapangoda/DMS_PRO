@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,11 +13,27 @@ import baseURL from "./apiConfig";
 const Register = () => {
   const [userId, setUserId] = useState("");
   const [username, setUsername] = useState("");
+  const [userTypeOptions, setUserTypeOptions] = useState([]);
   const [userType, setUserType] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+
+  useEffect(() => {
+    const fetchUserTypeOptions = async () => {
+      try {
+        const response = await axios.get(
+          `${baseURL}Authentication/GetBranchUserTypes`
+        );
+        setUserTypeOptions(response.data);
+      } catch (error) {
+        console.error("Error fetching user type options:", error);
+      }
+    };
+
+    fetchUserTypeOptions();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,8 +121,11 @@ const Register = () => {
                 required
               >
                 <option value="">Select User Type</option>
-                <option value="1">Manager</option>
-                <option value="2">Officer</option>
+                {userTypeOptions.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.text}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -146,7 +165,6 @@ const Register = () => {
               />
             </div>
           </div>
-
           <div className="form-group">
             <div className="input-group">
               <div className="input-group-prepend">
@@ -184,7 +202,7 @@ const Register = () => {
             </div>
           </div>
           <button type="submit" className="btn btn-primary btn-block">
-            Register
+            Sign Up
           </button>
         </form>
         <p className="mt-3 text-center">
