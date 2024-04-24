@@ -4,6 +4,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import baseURL from "../Auth/apiConfig";
 import { Alert } from "react-bootstrap";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Home = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -106,29 +108,48 @@ const Home = () => {
           </Modal.Header>
           <Modal.Body>
             <form>
-              <div className="mb-3">
-                <label htmlFor="oldPassword" className="form-label">
-                  Old Password
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="oldPassword"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                />
+              <div className="form-group">
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">
+                      <FontAwesomeIcon icon={faLock} />
+                    </span>
+                  </div>
+                  <input
+                    type="password"
+                    id="oldPassword"
+                    className="form-control"
+                    placeholder=""
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    required
+                  />
+                  <label for="branch" class="input-label">
+                    Password
+                  </label>
+                </div>
               </div>
-              <div className="mb-3">
-                <label htmlFor="newPassword" className="form-label">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
+
+              <div className="form-group mb-3">
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">
+                      <FontAwesomeIcon icon={faLock} />
+                    </span>
+                  </div>
+                  <input
+                    type="password"
+                    id="oldPassword"
+                    className="form-control"
+                    placeholder=""
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                  <label for="branch" class="input-label">
+                    New Password
+                  </label>
+                </div>
               </div>
             </form>
             {error && <div className="alert alert-danger">{error}</div>}

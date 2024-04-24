@@ -113,12 +113,14 @@ const Register = () => {
                   <FontAwesomeIcon icon={faBriefcase} />
                 </span>
               </div>
+
               <select
                 id="userType"
                 className="form-control"
                 value={userType}
                 onChange={(e) => setUserType(e.target.value)}
                 required
+                placeholder=""
               >
                 <option value="">Select User Type</option>
                 {userTypeOptions.map((type) => (
@@ -127,6 +129,9 @@ const Register = () => {
                   </option>
                 ))}
               </select>
+              <label for="branch" class="input-label">
+                User ID
+              </label>
             </div>
           </div>
           <div className="form-group">
@@ -161,11 +166,14 @@ const Register = () => {
                 type="text"
                 id="username"
                 className="form-control"
-                placeholder="Username"
+                placeholder=""
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
+              <label for="branch" class="input-label">
+                User Name
+              </label>
             </div>
           </div>
           <div className="form-group">
@@ -179,11 +187,14 @@ const Register = () => {
                 type="password"
                 id="password"
                 className="form-control"
-                placeholder="Password"
+                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <label for="branch" class="input-label">
+                Password
+              </label>
             </div>
           </div>
           <div className="form-group">
@@ -197,11 +208,14 @@ const Register = () => {
                 type="password"
                 id="confirmPassword"
                 className="form-control"
-                placeholder="Confirm Password"
+                placeholder=""
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
+              <label for="branch" class="input-label">
+                Confirm Password
+              </label>
             </div>
           </div>
           <button type="submit" className="btn btn-primary btn-block">

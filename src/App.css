@@ -265,25 +265,31 @@ li a.dropdown-toggle::after {
   text-align: center;
 }
 
+/* ---------------------------------------------------
+    INPUT
+----------------------------------------------------- */
+
 .input-container {
   position: relative;
 }
 
 .form-control {
-  padding-top: 20px; /* Adjust based on label height */
+  padding-top: 10px; /* Adjust based on label height */
 }
 
 .input-label {
   position: absolute;
   top: 10;
   left: 45px;
-  padding-top: 8px;
+  padding-top: 7px;
   pointer-events: none;
+  color: #b3acab;
+  font-size: 14px;
 }
 
 .form-control:focus + .input-label,
 .form-control:not(:placeholder-shown) + .input-label {
   transform: translateY(-100%);
-  font-size: 12px;
+  font-size: 11px;
   color: #666; /* Adjust the color as needed */
 }

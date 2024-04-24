@@ -120,10 +120,13 @@ const Login = ({ history }) => {
                 type="text"
                 id="branch"
                 className="form-control"
-                placeholder="Username"
+                placeholder=""
                 value={branch_name}
                 required
               />
+              <label for="branch" class="input-label">
+                Branch Name
+              </label>
             </div>
           </div>
           <div className="form-group">
@@ -137,11 +140,14 @@ const Login = ({ history }) => {
                 type="text"
                 id="username"
                 className="form-control"
-                placeholder="Username"
+                placeholder=""
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
+              <label for="branch" class="input-label">
+                User Name
+              </label>
             </div>
           </div>
           <div className="form-group">
@@ -155,11 +161,14 @@ const Login = ({ history }) => {
                 type="password"
                 id="password"
                 className="form-control"
-                placeholder="Password"
+                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <label for="branch" class="input-label">
+                Pssword
+              </label>
             </div>
           </div>
           <button type="submit" className="btn btn-primary btn-block">
