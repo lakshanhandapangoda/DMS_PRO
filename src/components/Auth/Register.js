@@ -140,11 +140,14 @@ const Register = () => {
                 type="text"
                 id="userId"
                 className="form-control"
-                placeholder="User ID"
+                placeholder=""
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 required
               />
+              <label for="branch" class="input-label">
+                User ID
+              </label>
             </div>
           </div>
           <div className="form-group">
