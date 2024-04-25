@@ -131,11 +131,10 @@ const Register = () => {
                   id="userType"
                   value={userType}
                   onChange={(e) => setUserType(e.target.value)}
-                  label="Module"
+                  label="UserType"
+                  size="small"
+                  required
                 >
-                  <MenuItem value="">
-                    <em>Select User Type</em>
-                  </MenuItem>
                   {userTypeOptions.map((type) => (
                     <MenuItem key={type.value} value={type.value}>
                       {type.text}
@@ -169,6 +168,7 @@ const Register = () => {
                 </span>
               </div>
               <TextField
+                size="small"
                 style={{ width: "270px" }}
                 label="UserId"
                 variant="outlined"
@@ -187,6 +187,7 @@ const Register = () => {
                 </span>
               </div>
               <TextField
+                size="small"
                 style={{ width: "270px" }}
                 id="username"
                 label="UserName"
@@ -205,6 +206,7 @@ const Register = () => {
                 </span>
               </div>
               <TextField
+                size="small"
                 style={{ width: "270px" }}
                 type="password"
                 id="password"
@@ -224,6 +226,7 @@ const Register = () => {
                 </span>
               </div>
               <TextField
+                size="small"
                 style={{ width: "270px" }}
                 type="password"
                 id="confirmPassword"

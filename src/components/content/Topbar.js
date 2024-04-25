@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAlignLeft,
-  faBell,
   faPowerOff,
   faUser,
-  faSignOutAlt,
+  faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import {
@@ -24,6 +23,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Tooltip,
 } from "reactstrap";
 import { useHistory } from "react-router-dom";
 
@@ -33,6 +33,7 @@ const Topbar = ({ toggleSidebar }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const history = useHistory();
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("user_id");
@@ -60,6 +61,7 @@ const Topbar = ({ toggleSidebar }) => {
     setUserName(username);
   };
 
+  const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
   return (
     <Navbar
       dark
@@ -79,29 +81,52 @@ const Topbar = ({ toggleSidebar }) => {
       >
         <FontAwesomeIcon icon={faAlignLeft} />
       </Button>
+
       <NavbarToggler onClick={toggleTopbar} />
       <Collapse isOpen={topbarIsOpen} navbar>
         <Nav className="ml-auto" navbar>
-          <span style={{ color: "white", fontSize: "15px" }} className="mt-2">
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+            className="mt-2"
+          >
             <FontAwesomeIcon
               icon={faUser}
               style={{ marginRight: "5px", color: "white" }}
             />
-            Welcome, {userName}
+            {isLoggedIn ? `Hello, ${userName}!` : `Welcome, Guest!`}
           </span>
 
           {isLoggedIn ? (
-            <NavItem className="mx-2" style={{ borderRadius: "10px" }}>
-              <Button color="link" onClick={handleLogout}>
+            <NavItem className="mx-4" style={{ borderRadius: "50px" }}>
+              <Button color="link" onClick={handleLogout} id="logoutTooltip">
                 <FontAwesomeIcon icon={faPowerOff} />
               </Button>
+              <Tooltip
+                placement="bottom"
+                isOpen={tooltipOpen}
+                target="logoutTooltip"
+                toggle={toggleTooltip}
+              >
+                Logout
+              </Tooltip>
             </NavItem>
           ) : (
-            <NavItem className="mx-2 icon-wrapper">
+            <NavItem
+              className="mx-4"
+              style={{ borderRadius: "10%", backgroundColor: "white" }}
+            >
               <Dropdown isOpen={userDropdownOpen} toggle={toggleUserDropdown}>
-                <DropdownToggle nav style={{ borderRadius: "50%" }}>
-                  <FontAwesomeIcon icon={faUser} className="bell-icon" />
+                <DropdownToggle nav style={{ borderRadius: "10" }}>
+                  <FontAwesomeIcon
+                    icon={faUser}
+                    style={{ marginRight: "5px", color: "blue" }}
+                  />
+                  <FontAwesomeIcon
+                    icon={faAngleDown}
+                    style={{ color: "blue" }}
+                  />
                 </DropdownToggle>
+
                 <DropdownMenu right>
                   <DropdownItem>
                     <Link to="/register">Register</Link>

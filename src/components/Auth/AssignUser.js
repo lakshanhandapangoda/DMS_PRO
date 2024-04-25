@@ -54,7 +54,26 @@ const AssignUser = () => {
           // setAssignedModules(response.data);
           // console.log('mod',response.data);
           let assignedFunctions = [];
+          let i = 0;
           for (const module of response.data) {
+            if (i == 0) {
+              setSelectedModule(response.data[0].moduleId);
+              try {
+                const token = localStorage.getItem("token");
+                const response1 = await axios.get(
+                  `${baseURL}AppUser/GetAppFunctionsByModule/${response.data[0].moduleId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+                setAvailableFunction(response1.data);
+              } catch (error) {
+                console.error("Error fetching available functions:", error);
+              }
+            }
+            i++;
             const functionResponse = await axios.get(
               `${baseURL}AppUser/GetAssignedFunctions/${user.userId}/${module.moduleId}`,
               {
@@ -68,6 +87,13 @@ const AssignUser = () => {
               ...assignedFunctions,
               ...functionResponse.data,
             ];
+
+            // Assuming assignedFunctions is an array of objects
+            assignedFunctions = assignedFunctions.map((func) => ({
+              ...func,
+              color: "gray",
+            }));
+            console.log("function", assignedFunctions);
           }
           setAssignedFunction(assignedFunctions);
         } catch (error) {
@@ -101,7 +127,7 @@ const AssignUser = () => {
   const handleModuleChange = async (event) => {
     const moduleValue = event.target.value;
     setSelectedModule(moduleValue);
-
+    setAvailableFunction([]);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -119,19 +145,38 @@ const AssignUser = () => {
   };
 
   const handleMoveToAssigned = () => {
-    const selectedRoles = availableFunction.filter((role) => role.selected);
+    const selectedRoles = availableFunction
+      .filter(
+        (role) =>
+          role.selected &&
+          !assignedFunction.some((r) => r.functionId === role.functionId)
+      )
+      .map((role) => ({
+        ...role,
+        color: "#1fd131",
+      }));
+
+    console.log(selectedRoles.length);
     setAssignedFunction((prevRoles) => [...prevRoles, ...selectedRoles]);
-    setAvailableFunction((prevRoles) =>
-      prevRoles.filter((role) => !role.selected)
-    );
+    if (selectedRoles.length > 0) {
+      setAvailableFunction((prevRoles) =>
+        prevRoles.filter((role) => !role.selected)
+      );
+    }
   };
 
   const handleMoveToAvailable = () => {
-    const selectedRoles = assignedFunction.filter((role) => role.selected);
-    setAvailableFunction((prevRoles) => [...prevRoles, ...selectedRoles]);
-    setAssignedFunction((prevRoles) =>
-      prevRoles.filter((role) => !role.selected)
+    const selectedRoles = assignedFunction.filter(
+      (role) =>
+        role.selected &&
+        !availableFunction.some((r) => r.functionId === role.functionId)
     );
+    setAvailableFunction((prevRoles) => [...prevRoles, ...selectedRoles]);
+    if (selectedRoles.length > 0) {
+      setAssignedFunction((prevRoles) =>
+        prevRoles.filter((role) => !role.selected)
+      );
+    }
   };
 
   const handleSelectRole = (role, grid) => {
@@ -199,18 +244,18 @@ const AssignUser = () => {
     }
   };
 
-  const handleCancel = () => {
-    // Reset state values or perform any other cancel actions
-    setUserId("");
-    setUserName("");
-    setUserType("");
-    setSelectedModule("");
-    setAvailableFunction([]);
-    setAssignedFunction([]);
-  };
-
   const handleGoBack = () => {
     window.history.back();
+  };
+
+  const handleCancel = () => {
+    // Reset state values or perform any other cancel actions
+    // setUserId("");
+    // setUserName("");
+    // setUserType("");
+    // setSelectedModule("");
+    // setAvailableFunction([]);
+    setAssignedFunction([]);
   };
 
   /////////
@@ -232,9 +277,9 @@ const AssignUser = () => {
           <div
             style={{
               position: "fixed",
-              top: "55px",
-              right: "40px",
-              transform: "translateY(-50%)",
+              top: "25px",
+              left: "50%",
+              transform: "translateX(-50%)",
               zIndex: 9999,
             }}
           >
@@ -274,6 +319,7 @@ const AssignUser = () => {
             <div className="row mb-4">
               <div className="col-md-4">
                 <TextField
+                  size="small"
                   fullWidth
                   label="User ID"
                   variant="outlined"
@@ -287,6 +333,7 @@ const AssignUser = () => {
 
               <div className="col-md-4">
                 <TextField
+                  size="small"
                   fullWidth
                   label="User Name"
                   variant="outlined"
@@ -306,10 +353,8 @@ const AssignUser = () => {
                     value={selectedModule}
                     onChange={handleModuleChange}
                     label="Module"
+                    size="small"
                   >
-                    <MenuItem value="">
-                      <em>Select Module</em>
-                    </MenuItem>
                     {assignedModules.map((module) => (
                       <MenuItem key={module.value} value={module.value}>
                         {module.text}
@@ -340,7 +385,12 @@ const AssignUser = () => {
             <div className="col-md-6">
               <div
                 className="card"
-                style={{ maxHeight: "300px", overflowY: "auto" }}
+                style={{
+                  maxHeight: "300px",
+                  overflowY: "auto",
+                  border: "2px solid #3477eb",
+                  borderRadius: "5px",
+                }}
               >
                 <div className="card-header bg-primary text-white">
                   Available Function
@@ -365,7 +415,12 @@ const AssignUser = () => {
             <div className="col-md-6">
               <div
                 className="card"
-                style={{ maxHeight: "300px", overflowY: "auto" }}
+                style={{
+                  maxHeight: "300px",
+                  overflowY: "auto",
+                  border: "2px solid #95979c",
+                  borderRadius: "5px",
+                }}
               >
                 <div className="card-header bg-secondary text-white">
                   Assigned Function
@@ -378,6 +433,7 @@ const AssignUser = () => {
                         className={`list-group-item ${
                           role.selected ? "active" : ""
                         }`}
+                        style={{ backgroundColor: role.color }}
                         onClick={() => handleSelectRole(role, "assigned")}
                       >
                         {role.functionName}
@@ -410,25 +466,34 @@ const AssignUser = () => {
 
           <div className="row mt-4">
             <div className="col-md">
-              <div className="d-flex justify-content-end">
-                <button
-                  className="btn btn-success me-2 mx-2"
+              <div className="d-flex justify-content-start">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  className=" mx-2"
                   onClick={handleSubmit}
                 >
                   <FontAwesomeIcon icon={faSave} className="me-1 mx-2" />
                   Save
-                </button>
-                <button className="btn btn-danger" onClick={handleCancel}>
+                </Button>
+                <Button
+                  color="warning"
+                  variant="contained"
+                  onClick={handleCancel}
+                >
                   <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
                   Clear
-                </button>
-                <button
-                  className="btn btn-secondary mx-2"
+                </Button>
+
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  className=" mx-2"
                   onClick={handleGoBack}
                 >
-                  <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+                  <FontAwesomeIcon icon={faArrowLeft} className="me-1 mx-2" />
                   Back
-                </button>
+                </Button>
               </div>
             </div>
           </div>

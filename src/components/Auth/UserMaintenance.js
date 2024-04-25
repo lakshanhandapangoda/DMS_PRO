@@ -188,9 +188,9 @@ function UserMaintenance() {
               <div
                 style={{
                   position: "fixed",
-                  top: "55px",
-                  right: "40px",
-                  transform: "translateY(-50%)",
+                  top: "25px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
                   zIndex: 9999,
                 }}
               >
@@ -242,10 +242,16 @@ function UserMaintenance() {
                 </div>
               </div>
               <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label="sticky table">
+                <Table stickyHeader aria-label="sticky table" size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell style={{ fontWeight: "bold" }}>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#babab8",
+                        }}
+                        align="left"
+                      >
                         <TableSortLabel
                           active={sortBy === "userId"}
                           direction={
@@ -256,7 +262,13 @@ function UserMaintenance() {
                           User ID
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#babab8",
+                        }}
+                        align="left"
+                      >
                         <TableSortLabel
                           active={sortBy === "userName"}
                           direction={
@@ -267,23 +279,21 @@ function UserMaintenance() {
                           User Name
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Function
-                      </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Password
-                      </TableCell>
-                      <TableCell style={{ fontWeight: "bold" }}>
-                        Current Status
-                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#babab8",
+                        }}
+                        align="center"
+                      ></TableCell>
                     </TableRow>
                   </TableHead>
                   <tbody>
                     {visibleUsers.map((user, index) => (
                       <TableRow key={index}>
-                        <TableCell>{user.userId}</TableCell>
-                        <TableCell>{user.userName}</TableCell>
-                        <TableCell>
+                        <TableCell align="left">{user.userId}</TableCell>
+                        <TableCell align="left">{user.userName}</TableCell>
+                        <TableCell align="center">
                           <Link
                             to={{
                               pathname: `/assign-user/${user.userId}`,
@@ -292,27 +302,36 @@ function UserMaintenance() {
                           >
                             <Button
                               variant="outline-secondary"
-                              size="sm"
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.75rem",
+                              }}
                               className="mr-2 mx-1"
                             >
                               <FontAwesomeIcon icon={faPlus} /> Assign
                             </Button>
                           </Link>
-                        </TableCell>
-                        <TableCell>
+
                           <Button
                             variant="outline-warning"
-                            size="sm"
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.75rem",
+                            }}
                             className="mr-2 mx-1"
                             onClick={() => handleResetPassword(user)}
                           >
                             <FontAwesomeIcon icon={faLock} /> Reset
                           </Button>
-                        </TableCell>
-                        <TableCell>
+
                           <Button
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.75rem",
+                              width: "80px",
+                            }}
                             variant={
-                              user.userStatus === 1
+                              user.userStatus === 1 || 2
                                 ? "outline-primary"
                                 : "outline-danger"
                             }
