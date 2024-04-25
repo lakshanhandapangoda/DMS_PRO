@@ -5,7 +5,14 @@ import { faUser, faLock, faBuilding } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
 import { withRouter } from "react-router-dom";
-import Home from "../layouts/Home";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
 
 const Login = ({ history }) => {
   const [username, setUsername] = useState("");
@@ -94,6 +101,7 @@ const Login = ({ history }) => {
               style={{ width: "330px", height: "100px", margin: "auto" }}
             />
           </div>
+
           <h2 style={{ fontFamily: "Arial, sans-serif", fontWeight: "bold" }}>
             Branch Inventory
           </h2>
@@ -106,8 +114,12 @@ const Login = ({ history }) => {
             Sign In to Continue
           </h6>
         </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
+
+        <div>
+          {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+        </div>
+
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <div className="input-group">
@@ -116,17 +128,15 @@ const Login = ({ history }) => {
                   <FontAwesomeIcon icon={faBuilding} />
                 </span>
               </div>
-              <input
-                type="text"
+              <TextField
+                style={{ width: "268px" }}
+                label="Branch"
+                variant="outlined"
                 id="branch"
-                className="form-control"
-                placeholder=""
                 value={branch_name}
+                onChange={(e) => setBranchName(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                Branch Name
-              </label>
             </div>
           </div>
           <div className="form-group">
@@ -136,18 +146,15 @@ const Login = ({ history }) => {
                   <FontAwesomeIcon icon={faUser} />
                 </span>
               </div>
-              <input
-                type="text"
+              <TextField
+                style={{ width: "268px" }}
                 id="username"
-                className="form-control"
-                placeholder=""
+                label="Username"
+                variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                User Name
-              </label>
             </div>
           </div>
           <div className="form-group">
@@ -157,23 +164,26 @@ const Login = ({ history }) => {
                   <FontAwesomeIcon icon={faLock} />
                 </span>
               </div>
-              <input
+              <TextField
+                style={{ width: "268px" }}
                 type="password"
                 id="password"
-                className="form-control"
-                placeholder=""
+                label="Password"
+                variant="outlined"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                Pssword
-              </label>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary btn-block">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ width: "310px" }}
+          >
             Sign In
-          </button>
+          </Button>
         </form>
         <p className="mt-3 text-center">
           New user?{" "}

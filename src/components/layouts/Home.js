@@ -6,6 +6,13 @@ import baseURL from "../Auth/apiConfig";
 import { Alert } from "react-bootstrap";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
 const Home = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -115,18 +122,16 @@ const Home = () => {
                       <FontAwesomeIcon icon={faLock} />
                     </span>
                   </div>
-                  <input
+                  <TextField
                     type="password"
                     id="oldPassword"
-                    className="form-control"
-                    placeholder=""
+                    label="OldPassword"
+                    variant="outlined"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
                     required
+                    sx={{ width: 425 }}
                   />
-                  <label for="branch" class="input-label">
-                    Password
-                  </label>
                 </div>
               </div>
 
@@ -137,18 +142,16 @@ const Home = () => {
                       <FontAwesomeIcon icon={faLock} />
                     </span>
                   </div>
-                  <input
+                  <TextField
                     type="password"
-                    id="oldPassword"
-                    className="form-control"
-                    placeholder=""
+                    id="newPassword"
+                    label="NewPassword"
+                    variant="outlined"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
+                    sx={{ width: 425 }}
                   />
-                  <label for="branch" class="input-label">
-                    New Password
-                  </label>
                 </div>
               </div>
             </form>

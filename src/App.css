@@ -269,12 +269,12 @@ li a.dropdown-toggle::after {
     INPUT
 ----------------------------------------------------- */
 
-.input-container {
+/* .input-container {
   position: relative;
 }
 
 .form-control {
-  padding-top: 10px; /* Adjust based on label height */
+  padding-top: 10px; 
 }
 
 .input-label {
@@ -291,5 +291,5 @@ li a.dropdown-toggle::after {
 .form-control:not(:placeholder-shown) + .input-label {
   transform: translateY(-100%);
   font-size: 11px;
-  color: #666; /* Adjust the color as needed */
-}
+  color: #666;
+} */

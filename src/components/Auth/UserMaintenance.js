@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Table from "react-bootstrap/Table";
+import Table from "@mui/material/Table";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel"; // Import TableSortLabel
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal"; // Import modal component
 import baseURL from "./apiConfig";
 import Card from "react-bootstrap/Card";
-import { useHistory } from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+
 import {
   faUser,
   faPlus,
@@ -16,17 +22,20 @@ import {
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import Pagination from "react-bootstrap/Pagination";
 
 function UserMaintenance() {
   const [itemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState(""); // State to store sorting column
+  const [sortDirection, setSortDirection] = useState("asc"); // State to store sorting direction
 
-  // Define fetchUsers outside useEffect
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -47,16 +56,10 @@ function UserMaintenance() {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // Function to handle search input change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  // Filter users based on search query
   const filteredUsers = users.filter(
     (user) =>
       user.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -81,7 +84,6 @@ function UserMaintenance() {
         }
       );
 
-      // Call fetchUsers
       fetchUsers();
 
       console.log("User status updated successfully.");
@@ -108,7 +110,6 @@ function UserMaintenance() {
       const token = localStorage.getItem("token");
       await axios.post(
         `${baseURL}AppUser/PasswordRest`,
-
         [user.userId, user.branchCode],
         {
           headers: {
@@ -136,14 +137,41 @@ function UserMaintenance() {
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
   };
+
+  const handleSortChange = (column) => {
+    // If clicking on the same column, reverse sort direction
+    if (column === sortBy) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortUsers = (a, b) => {
+    if (sortBy === "") return 0;
+
+    const aValue = a[sortBy];
+    const bValue = b[sortBy];
+
+    if (aValue < bValue) {
+      return sortDirection === "asc" ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortDirection === "asc" ? 1 : -1;
+    }
+    return 0;
+  };
+
+  const sortedUsers = filteredUsers.sort(sortUsers);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const visibleUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const visibleUsers = sortedUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(sortedUsers.length / itemsPerPage);
 
   return (
     <div>
@@ -213,103 +241,120 @@ function UserMaintenance() {
                   </span>
                 </div>
               </div>
-              <Table striped bordered hover className="text-center">
-                <thead>
-                  <tr>
-                    <th>User ID</th>
-                    <th>User Name</th>
-                    <th>Function</th>
-                    <th>Password</th>
-                    <th>Current Satus</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleUsers.map((user, index) => (
-                    <tr key={index}>
-                      <td>{user.userId}</td>
-                      <td>{user.userName}</td>
-
-                      <td>
-                        <Link
-                          to={{
-                            pathname: `/assign-user/${user.userId}`,
-                            state: { user: user },
-                          }}
+              <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        <TableSortLabel
+                          active={sortBy === "userId"}
+                          direction={
+                            sortBy === "userId" ? sortDirection : "asc"
+                          }
+                          onClick={() => handleSortChange("userId")}
                         >
+                          User ID
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        <TableSortLabel
+                          active={sortBy === "userName"}
+                          direction={
+                            sortBy === "userName" ? sortDirection : "asc"
+                          }
+                          onClick={() => handleSortChange("userName")}
+                        >
+                          User Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Function
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Password
+                      </TableCell>
+                      <TableCell style={{ fontWeight: "bold" }}>
+                        Current Status
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <tbody>
+                    {visibleUsers.map((user, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{user.userId}</TableCell>
+                        <TableCell>{user.userName}</TableCell>
+                        <TableCell>
+                          <Link
+                            to={{
+                              pathname: `/assign-user/${user.userId}`,
+                              state: { user: user },
+                            }}
+                          >
+                            <Button
+                              variant="outline-secondary"
+                              size="sm"
+                              className="mr-2 mx-1"
+                            >
+                              <FontAwesomeIcon icon={faPlus} /> Assign
+                            </Button>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
                           <Button
-                            variant="outline-secondary"
+                            variant="outline-warning"
                             size="sm"
                             className="mr-2 mx-1"
+                            onClick={() => handleResetPassword(user)}
                           >
-                            <FontAwesomeIcon icon={faPlus} /> Assign
+                            <FontAwesomeIcon icon={faLock} /> Reset
                           </Button>
-                        </Link>
-                      </td>
-                      <td>
-                        <Button
-                          variant="outline-warning"
-                          size="sm"
-                          className="mr-2 mx-1"
-                          onClick={() => handleResetPassword(user)}
-                        >
-                          <FontAwesomeIcon icon={faLock} /> Reset
-                        </Button>
-                      </td>
-
-                      <td>
-                        <Button
-                          variant={
-                            user.userStatus === 1
-                              ? "outline-primary"
-                              : "outline-danger"
-                          }
-                          size="sm"
-                          className="mr-2 mx-1"
-                          onClick={() =>
-                            updateUserStatus(
-                              user.userId,
-                              user.branchCode,
-                              user.userStatus === 1 ? 0 : 1
-                            )
-                          }
-                        >
-                          <FontAwesomeIcon
-                            icon={
-                              user.userStatus === 0
-                                ? faUserAltSlash // User is inactive
-                                : faUserAlt // User is active
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant={
+                              user.userStatus === 1
+                                ? "outline-primary"
+                                : "outline-danger"
                             }
-                          />{" "}
-                          {user.userStatus === 0 ? "Inactive" : "Active"}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-
-              <div>
-                {/* Your existing JSX code */}
-                <Pagination>
-                  <Pagination.Prev
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
+                            size="sm"
+                            className="mr-2 mx-1"
+                            onClick={() =>
+                              updateUserStatus(
+                                user.userId,
+                                user.branchCode,
+                                user.userStatus === 1 ? 0 : 1
+                              )
+                            }
+                          >
+                            <FontAwesomeIcon
+                              icon={
+                                user.userStatus === 0
+                                  ? faUserAltSlash // User is inactive
+                                  : faUserAlt // User is active
+                              }
+                            />{" "}
+                            {user.userStatus === 0 ? "Inactive" : "Active"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </tbody>
+                </Table>
+              </TableContainer>
+              <div
+                className="mt-2"
+                style={{ display: "flex", justifyContent: "flex-start" }}
+              >
+                <Stack spacing={2} direction="row" justifyContent="center">
+                  <span className="mt-1">Page No</span>
+                  <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    variant="outlined"
+                    shape="rounded"
                   />
-                  {[...Array(totalPages)].map((_, index) => (
-                    <Pagination.Item
-                      key={index + 1}
-                      active={index + 1 === currentPage}
-                      onClick={() => handlePageChange(index + 1)}
-                      activeLabel=""
-                    >
-                      {index + 1}
-                    </Pagination.Item>
-                  ))}
-                  <Pagination.Next
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={indexOfLastItem >= filteredUsers.length}
-                  />
-                </Pagination>
+                </Stack>
               </div>
             </Card.Body>
           </Card>

@@ -12,6 +12,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import baseURL from "./apiConfig";
 import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
 
 const AssignUser = () => {
   const [showAlert, setShowAlert] = useState(false);
@@ -201,14 +209,24 @@ const AssignUser = () => {
     setAssignedFunction([]);
   };
 
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   /////////
   return (
     <div className="container">
       <Card className="mb-4">
-        <Card.Header as="h6">
-          <FontAwesomeIcon icon={faCogs} className="me-2 mx-2" />
-          Assign User Function
+        <Card.Header
+          as="h6"
+          className="d-flex justify-content-between align-items-center"
+        >
+          <div>
+            <FontAwesomeIcon icon={faCogs} className="me-2 mx-2" />
+            Assign User Function
+          </div>
         </Card.Header>
+
         {/* Display the alert when showAlert is true */}
         {showAlert && (
           <div
@@ -253,53 +271,52 @@ const AssignUser = () => {
 
         <Card.Body>
           <Form>
-            <div className="row">
+            <div className="row mb-4">
               <div className="col-md-4">
-                <Form.Group className="mb-3" controlId="userId">
-                  <Form.Label>User ID</Form.Label>
-                  <Form.Control
-                    readOnly
-                    type="text"
-                    placeholder="Enter user ID"
-                    value={userId}
-                    onChange={(e) => setUserId(e.target.value)}
-                  />
-                </Form.Group>
+                <TextField
+                  fullWidth
+                  label="User ID"
+                  variant="outlined"
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
               </div>
 
               <div className="col-md-4">
-                <Form.Group className="mb-3" controlId="userName">
-                  <Form.Label>User Name</Form.Label>
-                  <Form.Control
-                    readOnly
-                    type="text"
-                    placeholder="Enter user name"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-                </Form.Group>
+                <TextField
+                  fullWidth
+                  label="User Name"
+                  variant="outlined"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
               </div>
 
               <div className="col-md-4">
-                <Form.Group className="mb-3" controlId="module">
-                  <Form.Label>Module</Form.Label>
-                  <Form.Control
-                    as="select"
+                <FormControl fullWidth>
+                  <InputLabel id="module-label">Module</InputLabel>
+                  <Select
+                    labelId="module-label"
                     value={selectedModule}
                     onChange={handleModuleChange}
+                    label="Module"
                   >
-                    <option>Select Module</option>
+                    <MenuItem value="">
+                      <em>Select Module</em>
+                    </MenuItem>
                     {assignedModules.map((module) => (
-                      <option
-                        key={module.value}
-                        value={module.value}
-                        style={{ color: "black" }}
-                      >
+                      <MenuItem key={module.value} value={module.value}>
                         {module.text}
-                      </option>
+                      </MenuItem>
                     ))}
-                  </Form.Control>
-                </Form.Group>
+                  </Select>
+                </FormControl>
               </div>
             </div>
 
@@ -392,8 +409,8 @@ const AssignUser = () => {
           </div>
 
           <div className="row mt-4">
-            <div className="col-md-6">
-              <div className="d-flex justify-content-start">
+            <div className="col-md">
+              <div className="d-flex justify-content-end">
                 <button
                   className="btn btn-success me-2 mx-2"
                   onClick={handleSubmit}
@@ -403,7 +420,14 @@ const AssignUser = () => {
                 </button>
                 <button className="btn btn-danger" onClick={handleCancel}>
                   <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
-                  Cancel
+                  Clear
+                </button>
+                <button
+                  className="btn btn-secondary mx-2"
+                  onClick={handleGoBack}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+                  Back
                 </button>
               </div>
             </div>

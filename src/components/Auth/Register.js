@@ -9,6 +9,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
 
 const Register = () => {
   const [userId, setUserId] = useState("");
@@ -103,8 +111,11 @@ const Register = () => {
           </h4>
           <br />
         </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
+        <div>
+          {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <div className="input-group">
@@ -114,7 +125,26 @@ const Register = () => {
                 </span>
               </div>
 
-              <select
+              <FormControl style={{ width: "268px" }}>
+                <InputLabel id="module-label">UserType</InputLabel>
+                <Select
+                  id="userType"
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value)}
+                  label="Module"
+                >
+                  <MenuItem value="">
+                    <em>Select User Type</em>
+                  </MenuItem>
+                  {userTypeOptions.map((type) => (
+                    <MenuItem key={type.value} value={type.value}>
+                      {type.text}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {/* <select
                 id="userType"
                 className="form-control"
                 value={userType}
@@ -128,10 +158,7 @@ const Register = () => {
                     {type.text}
                   </option>
                 ))}
-              </select>
-              <label for="branch" class="input-label">
-                User ID
-              </label>
+              </select> */}
             </div>
           </div>
           <div className="form-group">
@@ -141,18 +168,15 @@ const Register = () => {
                   <FontAwesomeIcon icon={faIdBadge} />
                 </span>
               </div>
-              <input
-                type="text"
+              <TextField
+                style={{ width: "270px" }}
+                label="UserId"
+                variant="outlined"
                 id="userId"
-                className="form-control"
-                placeholder=""
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                User ID
-              </label>
             </div>
           </div>
           <div className="form-group">
@@ -162,18 +186,15 @@ const Register = () => {
                   <FontAwesomeIcon icon={faUser} />
                 </span>
               </div>
-              <input
-                type="text"
+              <TextField
+                style={{ width: "270px" }}
                 id="username"
-                className="form-control"
-                placeholder=""
+                label="UserName"
+                variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                User Name
-              </label>
             </div>
           </div>
           <div className="form-group">
@@ -183,18 +204,16 @@ const Register = () => {
                   <FontAwesomeIcon icon={faLock} />
                 </span>
               </div>
-              <input
+              <TextField
+                style={{ width: "270px" }}
                 type="password"
                 id="password"
-                className="form-control"
-                placeholder=""
+                label="Password"
+                variant="outlined"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                Password
-              </label>
             </div>
           </div>
           <div className="form-group">
@@ -204,23 +223,26 @@ const Register = () => {
                   <FontAwesomeIcon icon={faLock} />
                 </span>
               </div>
-              <input
+              <TextField
+                style={{ width: "270px" }}
                 type="password"
                 id="confirmPassword"
-                className="form-control"
-                placeholder=""
+                label="ConfirmPassword"
+                variant="outlined"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
-              <label for="branch" class="input-label">
-                Confirm Password
-              </label>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary btn-block">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ width: "310px" }}
+          >
             Sign Up
-          </button>
+          </Button>
         </form>
         <p className="mt-3 text-center">
           Already have an account?{" "}

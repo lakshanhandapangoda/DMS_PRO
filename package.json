@@ -5,9 +5,13 @@
   "author": "Boukrouh Bilal",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.4",
     "@fortawesome/free-solid-svg-icons": "^5.3.1",
     "@fortawesome/react-fontawesome": "^0.1.2",
+    "@material-ui/core": "^4.12.4",
+    "@mui/material": "^5.15.15",
     "axios": "^1.6.8",
     "bootstrap": "^4.1.3",
     "classnames": "^2.2.6",
