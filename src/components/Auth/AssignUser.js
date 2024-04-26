@@ -91,7 +91,7 @@ const AssignUser = () => {
             // Assuming assignedFunctions is an array of objects
             assignedFunctions = assignedFunctions.map((func) => ({
               ...func,
-              color: "gray",
+              color: "#bbc7be",
             }));
             console.log("function", assignedFunctions);
           }
@@ -153,7 +153,7 @@ const AssignUser = () => {
       )
       .map((role) => ({
         ...role,
-        color: "#1fd131",
+        color: "#38f54b",
       }));
 
     console.log(selectedRoles.length);
@@ -172,11 +172,9 @@ const AssignUser = () => {
         !availableFunction.some((r) => r.functionId === role.functionId)
     );
     setAvailableFunction((prevRoles) => [...prevRoles, ...selectedRoles]);
-    if (selectedRoles.length > 0) {
-      setAssignedFunction((prevRoles) =>
-        prevRoles.filter((role) => !role.selected)
-      );
-    }
+    setAssignedFunction((prevRoles) =>
+      prevRoles.filter((role) => !role.selected)
+    );
   };
 
   const handleSelectRole = (role, grid) => {
@@ -230,6 +228,7 @@ const AssignUser = () => {
         message: "Your request was processed successfully.",
       });
       setTimeout(() => setShowAlert(false), 3000);
+      window.location.href = "/user-maintenance";
     } catch (error) {
       if (error.response.status === 401) {
         window.location.href = "/login";
@@ -262,7 +261,7 @@ const AssignUser = () => {
   return (
     <div className="container">
       <Card className="mb-4">
-        <Card.Header
+        {/* <Card.Header
           as="h6"
           className="d-flex justify-content-between align-items-center"
         >
@@ -270,7 +269,7 @@ const AssignUser = () => {
             <FontAwesomeIcon icon={faCogs} className="me-2 mx-2" />
             Assign User Function
           </div>
-        </Card.Header>
+        </Card.Header> */}
 
         {/* Display the alert when showAlert is true */}
         {showAlert && (
@@ -321,7 +320,7 @@ const AssignUser = () => {
                 <TextField
                   size="small"
                   fullWidth
-                  label="User ID"
+                  label="Service No"
                   variant="outlined"
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
@@ -433,7 +432,7 @@ const AssignUser = () => {
                         className={`list-group-item ${
                           role.selected ? "active" : ""
                         }`}
-                        style={{ backgroundColor: role.color }}
+                        // style={{ backgroundColor: role.color }}
                         onClick={() => handleSelectRole(role, "assigned")}
                       >
                         {role.functionName}

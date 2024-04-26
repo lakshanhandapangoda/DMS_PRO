@@ -69,13 +69,14 @@ const Login = ({ history }) => {
       const response = await axios.post(`${baseURL}Authentication/Login`, {
         //  branchIP: modifiedIp,
         branchIP: ":1",
-        branchCode: branches,
+        branchCode: "0001010",
         userId: username,
         password: password,
       });
       if (response.status === 200) {
         localStorage.setItem("user_id", username);
-        localStorage.setItem("branchCode", branches);
+        localStorage.setItem("branchCode", "0001010");
+        localStorage.setItem("userName", response.data.userName);
         localStorage.setItem("token", response.data.tokenString);
         localStorage.setItem("status", response.data.status);
         setSuccess("Login successful");
@@ -85,6 +86,7 @@ const Login = ({ history }) => {
         localStorage.setItem("user_id", username);
         localStorage.setItem("branchCode", branches);
         localStorage.setItem("password", password);
+        localStorage.setItem("userName", response.data.userName);
         localStorage.setItem("token", response.data.tokenString);
         localStorage.setItem("status", response.data.status);
         setSuccess("Login successful");
@@ -188,7 +190,7 @@ const Login = ({ history }) => {
                 label="Branch"
                 variant="outlined"
                 id="branch"
-                value={branch_name}
+                value={"0001010"}
                 onChange={(e) => setBranchName(e.target.value)}
                 required
               />
@@ -205,7 +207,7 @@ const Login = ({ history }) => {
                 size="small"
                 style={{ width: "268px" }}
                 id="username"
-                label="Username"
+                label="Service No"
                 variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -295,7 +297,7 @@ const Login = ({ history }) => {
           <Modal show={show} onHide={handleClose}>
             <Modal.Header>
               <Modal.Title style={{ fontSize: "18px" }}>
-                Reset Your Password
+                Change Your Password
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>

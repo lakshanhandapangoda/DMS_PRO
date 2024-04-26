@@ -18,7 +18,7 @@ import { styled } from "@mui/material/styles";
 import {
   faUser,
   faPlus,
-  faLock,
+  faUnlock,
   faUserAltSlash,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -189,10 +189,10 @@ function UserMaintenance() {
       <div>
         <div className="flex-fill ml-3 mx-4">
           <Card>
-            <Card.Header as="h6">
+            {/* <Card.Header as="h6">
               <FontAwesomeIcon icon={faUser} className="me-2 mx-2" />
               User Maintenance
-            </Card.Header>
+            </Card.Header> */}
 
             {/* Display the alert when showAlert is true */}
             {showAlert && (
@@ -271,7 +271,7 @@ function UserMaintenance() {
                           }
                           onClick={() => handleSortChange("userId")}
                         >
-                          User ID
+                          ServiceNo
                         </TableSortLabel>
                       </TableCell>
                       <TableCell
@@ -335,7 +335,7 @@ function UserMaintenance() {
                             className="mr-2 mx-1"
                             onClick={() => handleResetPassword(user)}
                           >
-                            <FontAwesomeIcon icon={faLock} /> Reset
+                            <FontAwesomeIcon icon={faUnlock} /> Reset
                           </Button>
 
                           <Button

@@ -5,8 +5,10 @@ import {
   faPowerOff,
   faUser,
   faAngleDown,
+  faCogs,
+  faHome,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Navbar,
   Button,
@@ -14,11 +16,6 @@ import {
   Collapse,
   Nav,
   NavItem,
-  NavLink,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
   Dropdown,
   DropdownToggle,
   DropdownMenu,
@@ -34,9 +31,10 @@ const Topbar = ({ toggleSidebar }) => {
   const [userName, setUserName] = useState("");
   const history = useHistory();
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    const storedUserName = localStorage.getItem("user_id");
+    const storedUserName = localStorage.getItem("userName");
     if (storedUserName) {
       setIsLoggedIn(true);
       setUserName(storedUserName);
@@ -45,7 +43,6 @@ const Topbar = ({ toggleSidebar }) => {
 
   const toggleTopbar = () => setTopbarOpen(!topbarIsOpen);
   const toggleUserDropdown = () => setUserDropdownOpen(!userDropdownOpen);
-
   const handleLogout = () => {
     localStorage.removeItem("user_id");
     localStorage.removeItem("token");
@@ -54,18 +51,12 @@ const Topbar = ({ toggleSidebar }) => {
     setUserName("");
     history.push("/login");
   };
-
-  const handleLogin = (username) => {
-    localStorage.setItem("user_id", username);
-    setIsLoggedIn(true);
-    setUserName(username);
-  };
-
   const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
+
   return (
     <Navbar
       dark
-      className="navbar shadow-sm p-3 mb-4  rounded"
+      className="navbar shadow-sm p-3 mb-4 rounded"
       expand="md"
       style={{
         position: "sticky",
@@ -84,6 +75,37 @@ const Topbar = ({ toggleSidebar }) => {
 
       <NavbarToggler onClick={toggleTopbar} />
       <Collapse isOpen={topbarIsOpen} navbar>
+        {/* <span style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}>
+          {location.pathname}
+        </span> */}
+
+        {location.pathname === "/user-maintenance" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faUser} className="me-2 mx-2" />
+            User Maintenance
+          </span>
+        )}
+
+        {location.pathname.includes("/assign-user") && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faCogs} className="me-2 mx-2" />
+            Assign Function
+          </span>
+        )}
+
+        {location.pathname === "/" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faHome} className="me-2 mx-2" />
+            Home
+          </span>
+        )}
+
         <Nav className="ml-auto" navbar>
           <span
             style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}

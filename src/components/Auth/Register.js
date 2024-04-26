@@ -82,6 +82,7 @@ const Register = () => {
       if (response.status === 201) {
         setSuccess("A new user has been successfully created");
         setTimeout(() => setSuccess(null), 10000);
+        window.location.href = "/login";
       }
     } catch (error) {
       setError(error.response.data.toString());
@@ -170,7 +171,7 @@ const Register = () => {
               <TextField
                 size="small"
                 style={{ width: "270px" }}
-                label="UserId"
+                label="Service No"
                 variant="outlined"
                 id="userId"
                 value={userId}
