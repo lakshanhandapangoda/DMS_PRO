@@ -13,6 +13,7 @@ import baseURL from "./apiConfig";
 import Card from "react-bootstrap/Card";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { styled } from "@mui/material/styles";
 
 import {
   faUser,
@@ -55,6 +56,16 @@ function UserMaintenance() {
       }
     }
   };
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -248,7 +259,8 @@ function UserMaintenance() {
                       <TableCell
                         style={{
                           fontWeight: "bold",
-                          backgroundColor: "#babab8",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
                         }}
                         align="left"
                       >
@@ -265,7 +277,8 @@ function UserMaintenance() {
                       <TableCell
                         style={{
                           fontWeight: "bold",
-                          backgroundColor: "#babab8",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
                         }}
                         align="left"
                       >
@@ -282,7 +295,8 @@ function UserMaintenance() {
                       <TableCell
                         style={{
                           fontWeight: "bold",
-                          backgroundColor: "#babab8",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
                         }}
                         align="center"
                       ></TableCell>
@@ -290,7 +304,7 @@ function UserMaintenance() {
                   </TableHead>
                   <tbody>
                     {visibleUsers.map((user, index) => (
-                      <TableRow key={index}>
+                      <StyledTableRow key={index}>
                         <TableCell align="left">{user.userId}</TableCell>
                         <TableCell align="left">{user.userName}</TableCell>
                         <TableCell align="center">
@@ -331,7 +345,7 @@ function UserMaintenance() {
                               width: "80px",
                             }}
                             variant={
-                              user.userStatus === 1 || 2
+                              user.userStatus === 1
                                 ? "outline-primary"
                                 : "outline-danger"
                             }
@@ -355,7 +369,7 @@ function UserMaintenance() {
                             {user.userStatus === 0 ? "Inactive" : "Active"}
                           </Button>
                         </TableCell>
-                      </TableRow>
+                      </StyledTableRow>
                     ))}
                   </tbody>
                 </Table>
