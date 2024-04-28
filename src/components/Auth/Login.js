@@ -69,13 +69,13 @@ const Login = ({ history }) => {
       const response = await axios.post(`${baseURL}Authentication/Login`, {
         //  branchIP: modifiedIp,
         branchIP: ":1",
-        branchCode: "0001010",
+        branchCode: branches,
         userId: username,
         password: password,
       });
       if (response.status === 200) {
         localStorage.setItem("user_id", username);
-        localStorage.setItem("branchCode", "0001010");
+        localStorage.setItem("branchCode", branches);
         localStorage.setItem("userName", response.data.userName);
         localStorage.setItem("token", response.data.tokenString);
         localStorage.setItem("status", response.data.status);
@@ -190,7 +190,7 @@ const Login = ({ history }) => {
                 label="Branch"
                 variant="outlined"
                 id="branch"
-                value={"0001010"}
+                value={branch_name}
                 onChange={(e) => setBranchName(e.target.value)}
                 required
               />

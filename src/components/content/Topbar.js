@@ -7,6 +7,8 @@ import {
   faAngleDown,
   faCogs,
   faHome,
+  faCartPlus,
+  faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -101,8 +103,17 @@ const Topbar = ({ toggleSidebar }) => {
           <span
             style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
           >
-            <FontAwesomeIcon icon={faHome} className="me-2 mx-2" />
-            Home
+            <FontAwesomeIcon icon={faChartBar} className="me-2 mx-2" />
+            Dashboard
+          </span>
+        )}
+
+        {location.pathname === "/item-request" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faCartPlus} className="mr-2" />
+            Item Request
           </span>
         )}
 

@@ -153,7 +153,7 @@ const AssignUser = () => {
       )
       .map((role) => ({
         ...role,
-        color: "#38f54b",
+        color: "#7f8082",
       }));
 
     console.log(selectedRoles.length);
@@ -432,7 +432,7 @@ const AssignUser = () => {
                         className={`list-group-item ${
                           role.selected ? "active" : ""
                         }`}
-                        // style={{ backgroundColor: role.color }}
+                        style={{ backgroundColor: role.color }}
                         onClick={() => handleSelectRole(role, "assigned")}
                       >
                         {role.functionName}

@@ -361,12 +361,13 @@ function UserMaintenance() {
                           >
                             <FontAwesomeIcon
                               icon={
-                                user.userStatus === 0
-                                  ? faUserAltSlash // User is inactive
-                                  : faUserAlt // User is active
+                                user.userStatus === 1
+                                  ? faUserAlt
+                                  : faUserAltSlash // User is inactive
+                                // User is active
                               }
                             />{" "}
-                            {user.userStatus === 0 ? "Inactive" : "Active"}
+                            {user.userStatus === 1 ? "Active" : "Inactive"}
                           </Button>
                         </TableCell>
                       </StyledTableRow>
