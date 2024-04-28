@@ -31,6 +31,9 @@ const SideBar = ({ isOpen, toggle }) => {
         );
         setSidebarItems(functionResponse.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          window.location.href = "/login";
+        }
         console.error("Error fetching data:", error);
       }
     };
@@ -61,7 +64,6 @@ const SideBar = ({ isOpen, toggle }) => {
           className="list-unstyled pb-3"
           style={{ overflowY: "hidden" }}
         >
-          <p style={{ color: "#fff" }}>Dummy Heading</p>
           {sidebarItems.map((item, index) => {
             if (item.functionName === "Item Request") {
               return (
