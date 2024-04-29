@@ -34,7 +34,7 @@ const Login = ({ history }) => {
     try {
       const response = await axios.post(
         `${baseURL}Authentication/GetCurrentBranch`,
-        "::1",
+
         {
           headers: {
             "Content-Type": "application/json",

@@ -432,7 +432,9 @@ const AssignUser = () => {
                         className={`list-group-item ${
                           role.selected ? "active" : ""
                         }`}
-                        style={{ backgroundColor: role.color }}
+                        style={{
+                          backgroundColor: role.selected ? "gray" : "inherit",
+                        }}
                         onClick={() => handleSelectRole(role, "assigned")}
                       >
                         {role.functionName}

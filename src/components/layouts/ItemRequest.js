@@ -5,14 +5,30 @@ import {
   faEdit,
   faSave,
   faPlus,
+  faTimes,
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
+import { styled } from "@mui/material/styles";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import baseURL from "../Auth/apiConfig";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
 
 function ItemRequest() {
   const [items, setItems] = useState([]);
@@ -112,6 +128,16 @@ function ItemRequest() {
     setEditIndex(null);
   };
 
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -166,9 +192,9 @@ function ItemRequest() {
         <div
           style={{
             position: "fixed",
-            top: "55px",
-            right: "40px",
-            transform: "translateY(-50%)",
+            top: "25px",
+            left: "50%",
+            transform: "translateX(-50%)",
             zIndex: 9999,
           }}
         >
@@ -204,166 +230,247 @@ function ItemRequest() {
       )}
 
       <Button
-        variant="primary"
-        className="mb-4"
+        color="secondary"
+        variant="contained"
+        className=" mb-4"
         onClick={() => setShowAddModal(true)}
       >
-        Add Item <FontAwesomeIcon icon={faPlus} className="mr-2" />
+        Add Item <FontAwesomeIcon icon={faPlus} className="mx-2" />
       </Button>
 
       <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
         <Modal.Header>
-          <Modal.Title>
+          <Modal.Title style={{ fontSize: "18px" }}>
             <h5>Add To Cart</h5>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <select
-            className="form-control mb-2"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-          >
-            <option value="">Select Product</option>
-            {productList.map((product) => (
-              <option key={product.productId} value={product.productId}>
-                {product.productId}
-              </option>
-            ))}
-          </select>
-          <input
+          <FormControl fullWidth className="mb-4">
+            <InputLabel id="Select_Product">Select Product</InputLabel>
+            <Select
+              labelId="Select_Product"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              label="Select Product"
+              size="small"
+            >
+              {productList.map((product) => (
+                <MenuItem key={product.productId} value={product.productId}>
+                  {product.productId}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <TextField
+            size="small"
+            fullWidth
+            label="Quantity"
+            variant="outlined"
             type="number"
-            className="form-control mb-2"
-            placeholder="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
           />
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant="secondary"
+            color="success"
+            variant="contained"
+            className=" mx-2"
+            onClick={handleAddToCart}
+          >
+            <FontAwesomeIcon icon={faSave} className="me-1 mx-2" />
+            Save
+          </Button>
+
+          <Button
+            color="warning"
+            variant="contained"
             onClick={() => {
               setShowAddModal(false);
               setProductId("");
               setQuantity("");
             }}
           >
+            <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
             Close
-          </Button>
-          <Button variant="success" onClick={handleAddToCart}>
-            <FontAwesomeIcon icon={faSave} className="me-2 mx-2" />
-            Save
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Card className="mb-4">
-        <Card.Header as="h6">
+        {/* <Card.Header as="h6">
           <FontAwesomeIcon icon={faShoppingCart} className="me-2 mx-2" />
           Cart
-        </Card.Header>
+        </Card.Header> */}
         <Card.Body>
-          <div
-            className="table-responsive"
-            style={{ maxHeight: "400px", overflowY: "auto" }}
-          >
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Product ID</th>
-                  <th>Description</th>
-                  <th>Quantity</th>
-                  <th>UOM</th>
-                  <th>Requested By</th>
-                  <th>Request Date</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      {editIndex === index ? (
-                        <input
-                          type="text"
-                          value={item.productId}
-                          onChange={(e) =>
-                            setItems(
-                              items.map((itm, idx) =>
-                                idx === index
-                                  ? { ...itm, productId: e.target.value }
-                                  : itm
+          <div className="table-responsive">
+            <TableContainer sx={{ maxHeight: 440, overflow: "auto" }}>
+              <Table stickyHeader aria-label="sticky table" size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Product ID
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Description
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Quantity
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      UOM
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Requested By
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Request Date
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {items.map((item, index) => (
+                    <StyledTableRow key={index}>
+                      <TableCell align="left">
+                        {editIndex === index ? (
+                          <input
+                            type="text"
+                            value={item.productId}
+                            onChange={(e) =>
+                              setItems(
+                                items.map((itm, idx) =>
+                                  idx === index
+                                    ? { ...itm, productId: e.target.value }
+                                    : itm
+                                )
                               )
-                            )
-                          }
-                          style={{ maxWidth: "100px" }}
-                        />
-                      ) : (
-                        item.productId
-                      )}
-                    </td>
-                    <td style={{ maxWidth: "200px" }}>
-                      {item.productDescription}
-                    </td>
-
-                    <td>
-                      {editIndex === index ? (
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            setItems(
-                              items.map((itm, idx) =>
-                                idx === index
-                                  ? { ...itm, quantity: e.target.value }
-                                  : itm
+                            }
+                            style={{ maxWidth: "90px" }}
+                          />
+                        ) : (
+                          item.productId
+                        )}
+                      </TableCell>
+                      <TableCell style={{ maxWidth: "200px" }} align="left">
+                        {item.productDescription}
+                      </TableCell>
+                      <TableCell>
+                        {editIndex === index ? (
+                          <input
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) =>
+                              setItems(
+                                items.map((itm, idx) =>
+                                  idx === index
+                                    ? { ...itm, quantity: e.target.value }
+                                    : itm
+                                )
                               )
-                            )
-                          }
-                          style={{ maxWidth: "100px" }} // Adjust the max-width as needed
-                        />
-                      ) : (
-                        item.quantity
-                      )}
-                    </td>
-                    <td>{item.uom}</td>
-                    <td>{item.requestedBy}</td>
-                    <td>{item.requestDate}</td>
-                    <td>
-                      {editIndex === index ? (
+                            }
+                            style={{ maxWidth: "90px" }} // Adjust the max-width as needed
+                          />
+                        ) : (
+                          item.quantity
+                        )}
+                      </TableCell>
+                      <TableCell align="left">{item.uom}</TableCell>
+                      <TableCell align="left">{item.requestedBy}</TableCell>
+                      <TableCell align="left">{item.requestDate}</TableCell>
+                      <TableCell align="left">
+                        {editIndex === index ? (
+                          <Button
+                            variant="contained"
+                            color="success"
+                            size="small"
+                            onClick={handleSaveEdit}
+                          >
+                            <FontAwesomeIcon icon={faSave} />
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="contained"
+                            color="warning"
+                            size="small"
+                            onClick={() => handleEditItem(index)}
+                          >
+                            <FontAwesomeIcon icon={faEdit} />
+                          </Button>
+                        )}
                         <Button
-                          variant="success"
-                          size="sm"
-                          className="mr-2 mx-2"
-                          onClick={handleSaveEdit}
+                          variant="contained"
+                          color="error"
+                          size="small"
+                          className="mx-2"
+                          onClick={() => handleDeleteItem(index)}
                         >
-                          <FontAwesomeIcon icon={faSave} />
+                          <FontAwesomeIcon icon={faTrash} />
                         </Button>
-                      ) : (
-                        <Button
-                          variant="warning"
-                          size="sm"
-                          className="mr-2 mx-2"
-                          onClick={() => handleEditItem(index)}
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </Button>
-                      )}
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDeleteItem(index)}
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                      </TableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
+
           <Button
+            color="primary"
+            variant="contained"
             className="mt-4"
-            variant="primary"
             onClick={handleSubmit}
             style={{ display: items.length === 0 ? "none" : "block" }}
           >

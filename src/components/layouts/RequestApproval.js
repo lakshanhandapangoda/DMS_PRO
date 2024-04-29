@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Table from "react-bootstrap/Table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Button from "react-bootstrap/Button";
+
 import Card from "react-bootstrap/Card";
 import {
   faEye,
@@ -146,7 +160,7 @@ function RequestApproval() {
     <div>
       <div className="d-flex justify-content-between mb-4">
         <Link to="/ItemRequestPage">
-          <Button variant="outline-primary mx-4">
+          <Button color="primary" variant="contained" className="mx-4">
             <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
             Add To Cart
           </Button>
@@ -164,45 +178,89 @@ function RequestApproval() {
               Unauthorized Cart
             </Card.Header>
             <Card.Body>
-              <div
-                className="table-responsive"
-                style={{ maxHeight: "400px", overflowY: "auto" }}
-              >
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Product ID</th>
-                      <th>Product Name</th>
-                      <th>UOM</th>
-                      <th>Quantity</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <TableContainer sx={{ maxHeight: "400px", overflowY: "auto" }}>
+                <Table stickyHeader aria-label="sticky table" size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Product ID
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Product Name
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        UOM
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Quantity
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Action
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
                     {unauthorizedProducts.map((product, index) => (
-                      <tr key={index}>
-                        <td>{product.productId}</td>
-                        <td style={{ maxWidth: "150px" }}>
+                      <TableRow key={index}>
+                        <TableCell align="left">{product.productId}</TableCell>
+                        <TableCell align="left" style={{ maxWidth: "150px" }}>
                           {product.productDescription}
-                        </td>
-                        <td>{product.txUnitOfMeasure}</td>
-                        <td>{product.quantity}</td>
-                        <td>
-                          <Form.Check
-                            inline
+                        </TableCell>
+                        <TableCell align="left">
+                          {product.txUnitOfMeasure}
+                        </TableCell>
+                        <TableCell align="left">{product.quantity}</TableCell>
+                        <TableCell>
+                          <Checkbox
                             name="group1"
                             className="mx-4"
                             onChange={(e) =>
                               handleProductSelectionChange(e, product.productId)
                             }
                           />
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
+                  </TableBody>
                 </Table>
-              </div>
-              <Form.Select
+              </TableContainer>
+
+              {/* <Form.Select
                 aria-label="Default select example"
                 className="mt-4"
                 onChange={handleDeliveryTypeChange}
@@ -214,26 +272,48 @@ function RequestApproval() {
                     {type.deliveryTypeText}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Select> */}
+
+              <FormControl className="mt-4" sx={{ width: "250px" }}>
+                <InputLabel id="delivery-type-label">
+                  Select delivery type
+                </InputLabel>
+                <Select
+                  size="small"
+                  labelId="delivery-type-label"
+                  value={selectedDeliveryType}
+                  onChange={handleDeliveryTypeChange}
+                  label="Select delivery type"
+                >
+                  <MenuItem value="">Select delivery type</MenuItem>
+                  {deliveryTypes.map((type, index) => (
+                    <MenuItem key={index} value={type.deliveryTypeValue}>
+                      {type.deliveryTypeText}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
               <div className="mt-4">
                 <Button
-                  variant="outline-primary "
-                  className="mr-3"
+                  color="success"
+                  variant="contained"
                   onClick={handleSubmit}
                   disabled={!selectedProducts.length || !selectedDeliveryType}
                 >
                   Send Request
                 </Button>
                 <Button
-                  variant="outline-warning mx-2"
+                  color="warning"
+                  variant="contained"
                   onClick={handleClear}
                   className="mr-3  mx-2"
                 >
                   Clear
                 </Button>
                 <Button
-                  variant="outline-success"
+                  color="success"
+                  variant="contained"
                   onClick={handleExit}
                   className="mr-3"
                 >
@@ -251,39 +331,76 @@ function RequestApproval() {
               Pending Delivery
             </Card.Header>
             <Card.Body>
-              <div
+              <TableContainer
                 className="table-responsive"
                 style={{ maxHeight: "400px", overflowY: "auto" }}
               >
                 <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Ref No</th>
-                      <th>Date</th>
-                      <th>Delivery</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Ref No
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Date
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        Delivery
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                        }}
+                        align="left"
+                      >
+                        View
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
                     {pendingDeliveries.map((delivery, index) => (
-                      <tr key={index}>
-                        <td>{delivery.refNo}</td>
-                        <td>{delivery.date}</td>
-                        <td>{delivery.deliveyTypeText}</td>
-                        <td>
+                      <TableRow key={index}>
+                        <TableCell>{delivery.refNo}</TableCell>
+                        <TableCell>{delivery.date}</TableCell>
+                        <TableCell>{delivery.deliveyTypeText}</TableCell>
+                        <TableCell>
                           <Button
-                            variant="primary"
-                            size="sm"
+                            variant="contained"
+                            color="primary"
+                            size="small"
                             className="mr-2 mx-2"
                           >
                             <FontAwesomeIcon icon={faEye} />
                           </Button>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
+                  </TableBody>
                 </Table>
-              </div>
+              </TableContainer>
             </Card.Body>
           </Card>
         </div>

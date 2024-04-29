@@ -51,11 +51,11 @@ const SideBar = ({ isOpen, toggle }) => {
           &times;
         </span>
         <div>
-          <img
+          {/* <img
             src={require("../Auth/logo (2).png")}
             alt="Logo"
             style={{ width: "250px", height: "80px", margin: "auto" }}
-          />
+          /> */}
         </div>
       </div>
       <div className="side-menu" style={{ overflowY: "hidden" }}>
@@ -103,18 +103,26 @@ const SideBar = ({ isOpen, toggle }) => {
             }
             return null;
           })}
-          {/* <NavItem>
-            <NavLink tag={Link} to={"/request-approval"} style={{ color: "#fff" }}>
+          <NavItem>
+            <NavLink
+              tag={Link}
+              to={"/request-approval"}
+              style={{ color: "#fff" }}
+            >
               <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
               Request Approval
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink tag={Link} to={"/request-department"} style={{ color: "#fff" }}>
+            <NavLink
+              tag={Link}
+              to={"/request-department"}
+              style={{ color: "#fff" }}
+            >
               <FontAwesomeIcon icon={faBuilding} className="mr-2" />
               Request Department
             </NavLink>
-          </NavItem> */}
+          </NavItem>
         </Nav>
       </div>
     </div>
