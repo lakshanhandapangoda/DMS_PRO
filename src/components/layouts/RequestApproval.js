@@ -93,12 +93,12 @@ function RequestApproval() {
     fetchDeliveryTypes();
   }, []);
 
-  const handleProductSelectionChange = (e, productId) => {
+  const handleProductSelectionChange = (e, product) => {
     const isChecked = e.target.checked;
     if (isChecked) {
-      setSelectedProducts([...selectedProducts, productId]);
+      setSelectedProducts([...selectedProducts, product]);
     } else {
-      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
+      setSelectedProducts(selectedProducts.filter((id) => id !== product));
     }
   };
 
@@ -112,7 +112,7 @@ function RequestApproval() {
       const token = localStorage.getItem("token");
       const user_id = localStorage.getItem("user_id");
 
-      const payload = unauthorizedProducts.map((product) => ({
+      const payload = selectedProducts.map((product) => ({
         branchFlag: 2,
         branchCode: branchCode,
         productId: product.productId,
@@ -139,7 +139,7 @@ function RequestApproval() {
       );
 
       console.log("Post request sent successfully:", response.data);
-
+      handleClear();
       setSelectedProducts([]);
       setSelectedDeliveryType("");
     } catch (error) {
@@ -153,21 +153,21 @@ function RequestApproval() {
   };
 
   const handleExit = () => {
-    // Handle exit logic here
+    window.history.back();
   };
 
   return (
     <div>
       <div className="d-flex justify-content-between mb-4">
-        <Link to="/ItemRequestPage">
-          <Button color="primary" variant="contained" className="mx-4">
+        <Link to="/item-request">
+          <Button color="secondary" variant="contained" className="mx-1">
             <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
             Add To Cart
           </Button>
         </Link>
       </div>
       <div className="d-flex">
-        <div className="flex-fill mr-3 mx-4">
+        <div className="flex-fill mr-2 ml-1">
           <Card>
             <Card.Header as="h6">
               <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
@@ -250,7 +250,7 @@ function RequestApproval() {
                             name="group1"
                             className="mx-4"
                             onChange={(e) =>
-                              handleProductSelectionChange(e, product.productId)
+                              handleProductSelectionChange(e, product)
                             }
                           />
                         </TableCell>
@@ -260,21 +260,7 @@ function RequestApproval() {
                 </Table>
               </TableContainer>
 
-              {/* <Form.Select
-                aria-label="Default select example"
-                className="mt-4"
-                onChange={handleDeliveryTypeChange}
-                value={selectedDeliveryType}
-              >
-                <option>Select delivery type</option>
-                {deliveryTypes.map((type, index) => (
-                  <option key={index} value={type.deliveryTypeValue}>
-                    {type.deliveryTypeText}
-                  </option>
-                ))}
-              </Form.Select> */}
-
-              <FormControl className="mt-4" sx={{ width: "250px" }}>
+              <FormControl className="mt-4" sx={{ width: "310px" }}>
                 <InputLabel id="delivery-type-label">
                   Select delivery type
                 </InputLabel>
@@ -296,7 +282,7 @@ function RequestApproval() {
 
               <div className="mt-4">
                 <Button
-                  color="success"
+                  color="primary"
                   variant="contained"
                   onClick={handleSubmit}
                   disabled={!selectedProducts.length || !selectedDeliveryType}
@@ -307,7 +293,7 @@ function RequestApproval() {
                   color="warning"
                   variant="contained"
                   onClick={handleClear}
-                  className="mr-3  mx-2"
+                  className=" mx-2"
                 >
                   Clear
                 </Button>
@@ -315,7 +301,7 @@ function RequestApproval() {
                   color="success"
                   variant="contained"
                   onClick={handleExit}
-                  className="mr-3"
+                  className=""
                 >
                   Exit
                 </Button>
@@ -324,18 +310,15 @@ function RequestApproval() {
           </Card>
         </div>
         {/* Pending Delivery Card */}
-        <div className="flex-fill ml-3 mx-4">
-          <Card>
+        <div>
+          <Card className="flex-fill  mx-3">
             <Card.Header as="h6">
               <FontAwesomeIcon icon={faClock} className="me-2 mx-2" />
               Pending Delivery
             </Card.Header>
             <Card.Body>
-              <TableContainer
-                className="table-responsive"
-                style={{ maxHeight: "400px", overflowY: "auto" }}
-              >
-                <Table striped bordered hover>
+              <TableContainer style={{ maxHeight: "400px", overflowY: "auto" }}>
+                <Table stickyHeader aria-label="sticky table" size="small">
                   <TableHead>
                     <TableRow>
                       <TableCell
@@ -391,7 +374,9 @@ function RequestApproval() {
                             variant="contained"
                             color="primary"
                             size="small"
-                            className="mr-2 mx-2"
+                            className="mx-2"
+                            component={Link}
+                            to={`/view-request/${delivery.refNo}`}
                           >
                             <FontAwesomeIcon icon={faEye} />
                           </Button>

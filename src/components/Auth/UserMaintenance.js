@@ -270,6 +270,12 @@ function UserMaintenance() {
                             sortBy === "userId" ? sortDirection : "asc"
                           }
                           onClick={() => handleSortChange("userId")}
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "#3d3d3d",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
                         >
                           ServiceNo
                         </TableSortLabel>
@@ -288,6 +294,12 @@ function UserMaintenance() {
                             sortBy === "userName" ? sortDirection : "asc"
                           }
                           onClick={() => handleSortChange("userName")}
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "#3d3d3d",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
                         >
                           User Name
                         </TableSortLabel>

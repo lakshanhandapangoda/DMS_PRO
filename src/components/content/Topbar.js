@@ -7,8 +7,10 @@ import {
   faAngleDown,
   faCogs,
   faHome,
+  faExclamationCircle,
   faCartPlus,
   faChartBar,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -114,6 +116,24 @@ const Topbar = ({ toggleSidebar }) => {
           >
             <FontAwesomeIcon icon={faCartPlus} className="mr-2" />
             Item Request
+          </span>
+        )}
+
+        {location.pathname === "/request-approval" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" />
+            Unauthorized Cart
+          </span>
+        )}
+
+        {location.pathname.includes("/view-request") && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faClock} className="mr-2" />
+            Pending Delivery
           </span>
         )}
 

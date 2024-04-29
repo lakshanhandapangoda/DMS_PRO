@@ -51,11 +51,11 @@ const SideBar = ({ isOpen, toggle }) => {
           &times;
         </span>
         <div>
-          {/* <img
+          <img
             src={require("../Auth/logo (2).png")}
             alt="Logo"
             style={{ width: "250px", height: "80px", margin: "auto" }}
-          /> */}
+          />
         </div>
       </div>
       <div className="side-menu" style={{ overflowY: "hidden" }}>

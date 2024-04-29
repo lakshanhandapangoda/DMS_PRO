@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
@@ -25,8 +25,7 @@ import {
   TextField,
   FormControl,
   InputLabel,
-  Select,
-  MenuItem,
+  Autocomplete,
   Button,
 } from "@mui/material";
 
@@ -132,7 +131,6 @@ function ItemRequest() {
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     "&:last-child td, &:last-child th": {
       border: 0,
     },
@@ -148,7 +146,7 @@ function ItemRequest() {
         productDescription: item.productDescription || "",
         uom: item.uom,
         quantity: parseFloat(item.quantity),
-        requestBy: "admin",
+        requestBy: localStorage.getItem("user_id"),
         requestDate: new Date(item.requestDate).toISOString(),
         requestWorkStation: "::1",
       }));
@@ -183,6 +181,16 @@ function ItemRequest() {
       });
       setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
       console.error("Error during request:", error);
+    }
+  };
+
+  const handleProductChange = (newValue) => {
+    if (newValue) {
+      setProductDescription(newValue.productDescription);
+      setProductId(newValue.productId);
+    } else {
+      setProductDescription("");
+      setProductId("");
     }
   };
 
@@ -245,7 +253,7 @@ function ItemRequest() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FormControl fullWidth className="mb-4">
+          {/* <FormControl fullWidth className="mb-4">
             <InputLabel id="Select_Product">Select Product</InputLabel>
             <Select
               labelId="Select_Product"
@@ -260,6 +268,78 @@ function ItemRequest() {
                 </MenuItem>
               ))}
             </Select>
+          </FormControl> */}
+
+          {/* <FormControl fullWidth className="mb-4">
+      <InputLabel id="select-product-label">Select Product</InputLabel> */}
+          {/* <Select
+        labelId="select-product-label"
+        value={productId}
+        onChange={handleProductChange}
+        label="Select Product"
+        size="small"
+      >
+        {productList.map((product) => (
+          <MenuItem key={product.productId} value={product.productId}>
+            {product.productId}
+          </MenuItem>
+        ))}
+      </Select> */}
+
+          {/* <Autocomplete
+        id="product-description"
+        options={productList}
+        getOptionLabel={(option) => option.productId}
+        value={productList.find(product => product.productId === productId) || null}
+        renderInput={(params) => <TextField {...params} label="Product Id" />}
+        onChange={handleProductChange}
+      />
+      <Autocomplete
+        className="mt-3"
+        id="product-description"
+        options={productList}
+        getOptionLabel={(option) => option.productDescription}
+        value={productList.find(product => product.productId === productId) || null}
+        onChange={(event, newValue) => {
+          setProductDescription(newValue ? newValue.productDescription : '');
+          setProductId(newValue ? newValue.productId : '');
+        }}
+        renderInput={(params) => <TextField {...params} label="Product Description" />}
+        disabled={!productId}
+      />
+    </FormControl> */}
+
+          <FormControl fullWidth className="mb-4">
+            <Autocomplete
+              id="product-id"
+              options={productList}
+              getOptionLabel={(option) => option.productId}
+              value={
+                productList.find(
+                  (product) => product.productId === productId
+                ) || null
+              }
+              onChange={(event, newValue) => handleProductChange(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Product Id" />
+              )}
+            />
+            <Autocomplete
+              className="mt-3"
+              id="product-description"
+              options={productList}
+              getOptionLabel={(option) => option.productDescription}
+              value={
+                productList.find(
+                  (product) => product.productId === productId
+                ) || null
+              }
+              onChange={(event, newValue) => handleProductChange(newValue)}
+              renderInput={(params) => (
+                <TextField {...params} label="Product Description" />
+              )}
+              disabled={!productId}
+            />
           </FormControl>
 
           <TextField
