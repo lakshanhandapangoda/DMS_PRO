@@ -34,6 +34,7 @@ function RequestApproval() {
   const [deliveryTypes, setDeliveryTypes] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedDeliveryType, setSelectedDeliveryType] = useState("");
+  const [showAlert, setShowAlert] = useState({ type: "", message: "" });
 
   useEffect(() => {
     const fetchUnauthorizedProducts = async () => {
@@ -50,6 +51,14 @@ function RequestApproval() {
         );
         setUnauthorizedProducts(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          window.location.href = "/login";
+        }
+        setShowAlert({
+          type: "error",
+          message: error.response.data.toString(),
+        });
+        setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
         console.error("Error fetching unauthorized products:", error);
       }
     };
@@ -85,6 +94,9 @@ function RequestApproval() {
         );
         setDeliveryTypes(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          window.location.href = "/login";
+        }
         console.error("Error fetching delivery types:", error);
       }
     };
@@ -115,6 +127,7 @@ function RequestApproval() {
       const payload = selectedProducts.map((product) => ({
         branchFlag: 2,
         branchCode: branchCode,
+        seqNo: 2,
         productId: product.productId,
         productDescription: product.productDescription,
         txUnitOfMeasure: product.txUnitOfMeasure,
@@ -137,12 +150,28 @@ function RequestApproval() {
           },
         }
       );
-
+      setShowAlert({
+        type: "success",
+        message: "Post request sent successfully",
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
       console.log("Post request sent successfully:", response.data);
+      fetchPendingDeliveries();
+      fetchUnauthorizedProducts();
+      fetchDeliveryTypes();
       handleClear();
       setSelectedProducts([]);
       setSelectedDeliveryType("");
     } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
+
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
       console.error("Error sending post request:", error);
     }
   };
@@ -157,7 +186,47 @@ function RequestApproval() {
   };
 
   return (
-    <div>
+    <div className="container">
+      {showAlert.type && (
+        <div
+          style={{
+            position: "fixed",
+            top: "25px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor:
+                showAlert.type === "success" ? "#d4edda" : "#f8d7da",
+              color: showAlert.type === "success" ? "#155724" : "#721c24",
+              padding: "10px",
+              borderRadius: "5px",
+              boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.5)",
+            }}
+          >
+            <strong>
+              {showAlert.type === "success" ? "Success:" : "Error:"}
+            </strong>{" "}
+            {showAlert.message}
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Close"
+              onClick={() => setShowAlert({ type: "", message: "" })}
+              style={{
+                height: "40px",
+                marginLeft: "10px",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            ></button>
+          </div>
+        </div>
+      )}
       <div className="d-flex justify-content-between mb-4">
         <Link to="/item-request">
           <Button color="secondary" variant="contained" className="mx-1">
@@ -167,151 +236,150 @@ function RequestApproval() {
         </Link>
       </div>
       <div className="d-flex">
-        <div className="flex-fill mr-2 ml-1">
-          <Card>
-            <Card.Header as="h6">
-              <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
-              <FontAwesomeIcon
-                icon={faExclamationCircle}
-                className="text-danger me-2 mx-2"
-              />
-              Unauthorized Cart
-            </Card.Header>
-            <Card.Body>
-              <TableContainer sx={{ maxHeight: "400px", overflowY: "auto" }}>
-                <Table stickyHeader aria-label="sticky table" size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#3d3d3d",
-                          color: "white",
-                        }}
-                        align="left"
-                      >
-                        Product ID
+        <Card className="flex-fill mr-2 ml-1" style={{ overflow: "auto" }}>
+          <Card.Header as="h6">
+            <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
+            <FontAwesomeIcon
+              icon={faExclamationCircle}
+              className="text-danger me-2 mx-2"
+            />
+            Unauthorized Cart
+          </Card.Header>
+          <Card.Body>
+            <TableContainer sx={{ maxHeight: "400px", overflow: "auto" }}>
+              <Table stickyHeader aria-label="sticky table" size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Product ID
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Product Name
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      UOM
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Quantity
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "#3d3d3d",
+                        color: "white",
+                      }}
+                      align="left"
+                    >
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {unauthorizedProducts.map((product, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="left">{product.productId}</TableCell>
+                      <TableCell align="left" style={{ maxWidth: "150px" }}>
+                        {product.productDescription}
                       </TableCell>
-                      <TableCell
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#3d3d3d",
-                          color: "white",
-                        }}
-                        align="left"
-                      >
-                        Product Name
+                      <TableCell align="left">
+                        {product.txUnitOfMeasure}
                       </TableCell>
-                      <TableCell
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#3d3d3d",
-                          color: "white",
-                        }}
-                        align="left"
-                      >
-                        UOM
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#3d3d3d",
-                          color: "white",
-                        }}
-                        align="left"
-                      >
-                        Quantity
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#3d3d3d",
-                          color: "white",
-                        }}
-                        align="left"
-                      >
-                        Action
+                      <TableCell align="left">{product.quantity}</TableCell>
+                      <TableCell>
+                        <Checkbox
+                          name="group1"
+                          className="mx-4"
+                          onChange={(e) =>
+                            handleProductSelectionChange(e, product)
+                          }
+                        />
                       </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {unauthorizedProducts.map((product, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="left">{product.productId}</TableCell>
-                        <TableCell align="left" style={{ maxWidth: "150px" }}>
-                          {product.productDescription}
-                        </TableCell>
-                        <TableCell align="left">
-                          {product.txUnitOfMeasure}
-                        </TableCell>
-                        <TableCell align="left">{product.quantity}</TableCell>
-                        <TableCell>
-                          <Checkbox
-                            name="group1"
-                            className="mx-4"
-                            onChange={(e) =>
-                              handleProductSelectionChange(e, product)
-                            }
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-              <FormControl className="mt-4" sx={{ width: "310px" }}>
-                <InputLabel id="delivery-type-label">
-                  Select delivery type
-                </InputLabel>
-                <Select
-                  size="small"
-                  labelId="delivery-type-label"
-                  value={selectedDeliveryType}
-                  onChange={handleDeliveryTypeChange}
-                  label="Select delivery type"
-                >
-                  <MenuItem value="">Select delivery type</MenuItem>
-                  {deliveryTypes.map((type, index) => (
-                    <MenuItem key={index} value={type.deliveryTypeValue}>
-                      {type.deliveryTypeText}
-                    </MenuItem>
                   ))}
-                </Select>
-              </FormControl>
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-              <div className="mt-4">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={handleSubmit}
-                  disabled={!selectedProducts.length || !selectedDeliveryType}
-                >
-                  Send Request
-                </Button>
-                <Button
-                  color="warning"
-                  variant="contained"
-                  onClick={handleClear}
-                  className=" mx-2"
-                >
-                  Clear
-                </Button>
-                <Button
-                  color="success"
-                  variant="contained"
-                  onClick={handleExit}
-                  className=""
-                >
-                  Exit
-                </Button>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
+            <FormControl className="mt-4" sx={{ width: "310px" }}>
+              <InputLabel id="delivery-type-label">
+                Select delivery type
+              </InputLabel>
+              <Select
+                size="small"
+                labelId="delivery-type-label"
+                value={selectedDeliveryType}
+                onChange={handleDeliveryTypeChange}
+                label="Select delivery type"
+              >
+                <MenuItem value="">Select delivery type</MenuItem>
+                {deliveryTypes.map((type, index) => (
+                  <MenuItem key={index} value={type.deliveryTypeValue}>
+                    {type.deliveryTypeText}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <div className="mt-4">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={!selectedProducts.length || !selectedDeliveryType}
+              >
+                Send Request
+              </Button>
+              <Button
+                color="warning"
+                variant="contained"
+                onClick={handleClear}
+                className=" mx-2"
+              >
+                Clear
+              </Button>
+              <Button
+                color="success"
+                variant="contained"
+                onClick={handleExit}
+                className=""
+              >
+                Exit
+              </Button>
+            </div>
+          </Card.Body>
+        </Card>
+
         {/* Pending Delivery Card */}
         <div>
-          <Card className="flex-fill  mx-3">
+          <Card className="flex-fill mx-3" style={{ maxWidth: "500px" }}>
             <Card.Header as="h6">
               <FontAwesomeIcon icon={faClock} className="me-2 mx-2" />
               Pending Delivery
@@ -367,7 +435,22 @@ function RequestApproval() {
                     {pendingDeliveries.map((delivery, index) => (
                       <TableRow key={index}>
                         <TableCell>{delivery.refNo}</TableCell>
-                        <TableCell>{delivery.date}</TableCell>
+                        <TableCell
+                          style={{
+                            maxWidth: "120px",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          <div>
+                            {new Date(delivery.date).toLocaleDateString()}
+                          </div>
+                          <div>
+                            {new Date(delivery.date).toLocaleTimeString()}
+                          </div>
+                        </TableCell>
+
                         <TableCell>{delivery.deliveyTypeText}</TableCell>
                         <TableCell>
                           <Button
