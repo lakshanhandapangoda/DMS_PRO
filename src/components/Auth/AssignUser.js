@@ -259,7 +259,7 @@ const AssignUser = () => {
 
   /////////
   return (
-    <div className="container">
+    <div>
       <Card className="mb-4">
         {/* <Card.Header
           as="h6"

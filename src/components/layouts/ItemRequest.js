@@ -81,6 +81,15 @@ function ItemRequest() {
       (product) => product.productId === productId
     );
 
+    if (!quantity) {
+      setShowAlert({
+        type: "error",
+        message: "Quantity is required to add the product to the cart.",
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      return;
+    }
+
     if (selectedProduct) {
       const existingItemIndex = items.findIndex(
         (item) => item.productId === selectedProduct.productId
@@ -195,7 +204,7 @@ function ItemRequest() {
   };
 
   return (
-    <div className="container">
+    <div>
       {showAlert.type && (
         <div
           style={{
@@ -253,80 +262,9 @@ function ItemRequest() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* <FormControl fullWidth className="mb-4">
-            <InputLabel id="Select_Product">Select Product</InputLabel>
-            <Select
-              labelId="Select_Product"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
-              label="Select Product"
-              size="small"
-            >
-              {productList.map((product) => (
-                <MenuItem key={product.productId} value={product.productId}>
-                  {product.productId}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
-
-          {/* <FormControl fullWidth className="mb-4">
-      <InputLabel id="select-product-label">Select Product</InputLabel> */}
-          {/* <Select
-        labelId="select-product-label"
-        value={productId}
-        onChange={handleProductChange}
-        label="Select Product"
-        size="small"
-      >
-        {productList.map((product) => (
-          <MenuItem key={product.productId} value={product.productId}>
-            {product.productId}
-          </MenuItem>
-        ))}
-      </Select> */}
-
-          {/* <Autocomplete
-        id="product-description"
-        options={productList}
-        getOptionLabel={(option) => option.productId}
-        value={productList.find(product => product.productId === productId) || null}
-        renderInput={(params) => <TextField {...params} label="Product Id" />}
-        onChange={handleProductChange}
-      />
-      <Autocomplete
-        className="mt-3"
-        id="product-description"
-        options={productList}
-        getOptionLabel={(option) => option.productDescription}
-        value={productList.find(product => product.productId === productId) || null}
-        onChange={(event, newValue) => {
-          setProductDescription(newValue ? newValue.productDescription : '');
-          setProductId(newValue ? newValue.productId : '');
-        }}
-        renderInput={(params) => <TextField {...params} label="Product Description" />}
-        disabled={!productId}
-      />
-    </FormControl> */}
-
           <FormControl fullWidth className="mb-4">
             <Autocomplete
               id="product-id"
-              options={productList}
-              getOptionLabel={(option) => option.productId}
-              value={
-                productList.find(
-                  (product) => product.productId === productId
-                ) || null
-              }
-              onChange={(event, newValue) => handleProductChange(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Product Id" />
-              )}
-            />
-            <Autocomplete
-              className="mt-3"
-              id="product-description"
               options={productList}
               getOptionLabel={(option) => option.productDescription}
               value={
@@ -336,9 +274,8 @@ function ItemRequest() {
               }
               onChange={(event, newValue) => handleProductChange(newValue)}
               renderInput={(params) => (
-                <TextField {...params} label="Product Description" />
+                <TextField {...params} label="Product" />
               )}
-              disabled={!productId}
             />
           </FormControl>
 
@@ -350,6 +287,7 @@ function ItemRequest() {
             type="number"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
+            required
           />
         </Modal.Body>
         <Modal.Footer>
@@ -379,10 +317,6 @@ function ItemRequest() {
       </Modal>
 
       <Card className="mb-4">
-        {/* <Card.Header as="h6">
-          <FontAwesomeIcon icon={faShoppingCart} className="me-2 mx-2" />
-          Cart
-        </Card.Header> */}
         <Card.Body>
           <div className="table-responsive">
             <TableContainer sx={{ maxHeight: 440, overflow: "auto" }}>
@@ -464,26 +398,7 @@ function ItemRequest() {
                 <TableBody>
                   {items.map((item, index) => (
                     <StyledTableRow key={index}>
-                      <TableCell align="left">
-                        {editIndex === index ? (
-                          <input
-                            type="text"
-                            value={item.productId}
-                            onChange={(e) =>
-                              setItems(
-                                items.map((itm, idx) =>
-                                  idx === index
-                                    ? { ...itm, productId: e.target.value }
-                                    : itm
-                                )
-                              )
-                            }
-                            style={{ maxWidth: "90px" }}
-                          />
-                        ) : (
-                          item.productId
-                        )}
-                      </TableCell>
+                      <TableCell align="left">{item.productId}</TableCell>
                       <TableCell style={{ maxWidth: "200px" }} align="left">
                         {item.productDescription}
                       </TableCell>

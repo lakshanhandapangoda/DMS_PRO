@@ -14,7 +14,9 @@ import {
   faSortDown,
   faSortUp,
   faSearch,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@mui/material";
 import baseURL from "../Auth/apiConfig";
 import Card from "react-bootstrap/Card";
 import { useLocation } from "react-router-dom";
@@ -86,6 +88,10 @@ const ViewRequest = () => {
   const filteredData = sortedData.filter((item) =>
     item.productDescription.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
 
   return (
     <div className="d-flex">
@@ -206,6 +212,15 @@ const ViewRequest = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            <Button
+              color="secondary"
+              variant="contained"
+              className="mt-4"
+              onClick={handleGoBack}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="me-1 mx-2 " />
+              Back
+            </Button>
           </Card.Body>
         </Card>
       </div>

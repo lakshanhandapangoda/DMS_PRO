@@ -6,11 +6,12 @@ import {
   faUser,
   faAngleDown,
   faCogs,
-  faHome,
+  faShoppingCart,
   faExclamationCircle,
   faCartPlus,
   faChartBar,
   faClock,
+  faClipboardList,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -123,7 +124,11 @@ const Topbar = ({ toggleSidebar }) => {
           <span
             style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
           >
-            <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" />
+            <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
+            <FontAwesomeIcon
+              icon={faExclamationCircle}
+              className="text-danger me-2 mx-2"
+            />
             Unauthorized Cart
           </span>
         )}
@@ -134,6 +139,15 @@ const Topbar = ({ toggleSidebar }) => {
           >
             <FontAwesomeIcon icon={faClock} className="mr-2" />
             Pending Delivery
+          </span>
+        )}
+
+        {location.pathname === "/request-department" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faClipboardList} className="mx-2" />
+            Request Department
           </span>
         )}
 

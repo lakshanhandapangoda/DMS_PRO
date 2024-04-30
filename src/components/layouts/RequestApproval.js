@@ -37,73 +37,74 @@ function RequestApproval() {
   const [showAlert, setShowAlert] = useState({ type: "", message: "" });
 
   useEffect(() => {
-    const fetchUnauthorizedProducts = async () => {
-      try {
-        const branchCode = localStorage.getItem("branchCode");
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${baseURL}BranchRequestItems/GetUnAuthorizedCartProductDetails/2/${branchCode}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setUnauthorizedProducts(response.data);
-      } catch (error) {
-        if (error.response.status === 401) {
-          window.location.href = "/login";
-        }
-        setShowAlert({
-          type: "error",
-          message: error.response.data.toString(),
-        });
-        setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
-        console.error("Error fetching unauthorized products:", error);
-      }
-    };
-
-    const fetchPendingDeliveries = async () => {
-      try {
-        const branchCode = localStorage.getItem("branchCode");
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${baseURL}BranchRequestItems/GetPendingDeliveryList/2/${branchCode}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setPendingDeliveries(response.data);
-      } catch (error) {
-        console.error("Error fetching pending deliveries:", error);
-      }
-    };
-
-    const fetchDeliveryTypes = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${baseURL}BranchRequestItems/GetDeliveryTypeByDecodes`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setDeliveryTypes(response.data);
-      } catch (error) {
-        if (error.response.status === 401) {
-          window.location.href = "/login";
-        }
-        console.error("Error fetching delivery types:", error);
-      }
-    };
     fetchPendingDeliveries();
     fetchUnauthorizedProducts();
     fetchDeliveryTypes();
   }, []);
+
+  const fetchPendingDeliveries = async () => {
+    try {
+      const branchCode = localStorage.getItem("branchCode");
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${baseURL}BranchRequestItems/GetPendingDeliveryList/2/${branchCode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPendingDeliveries(response.data);
+    } catch (error) {
+      console.error("Error fetching pending deliveries:", error);
+    }
+  };
+
+  const fetchDeliveryTypes = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${baseURL}BranchRequestItems/GetDeliveryTypeByDecodes`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setDeliveryTypes(response.data);
+    } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
+      console.error("Error fetching delivery types:", error);
+    }
+  };
+
+  const fetchUnauthorizedProducts = async () => {
+    try {
+      const branchCode = localStorage.getItem("branchCode");
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${baseURL}BranchRequestItems/GetUnAuthorizedCartProductDetails/2/${branchCode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUnauthorizedProducts(response.data);
+    } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      console.error("Error fetching unauthorized products:", error);
+    }
+  };
 
   const handleProductSelectionChange = (e, product) => {
     const isChecked = e.target.checked;
@@ -156,23 +157,28 @@ function RequestApproval() {
       });
       setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
       console.log("Post request sent successfully:", response.data);
+
+      // Refetch data after successful submission
       fetchPendingDeliveries();
       fetchUnauthorizedProducts();
       fetchDeliveryTypes();
+
       handleClear();
       setSelectedProducts([]);
       setSelectedDeliveryType("");
     } catch (error) {
+      // Handle errors here
+      console.error("Error sending post request:", error);
       if (error.response.status === 401) {
         window.location.href = "/login";
       }
-
       setShowAlert({
         type: "error",
-        message: error.response.data.toString(),
+        message: error.response
+          ? error.response.data.toString()
+          : "An error occurred",
       });
       setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
-      console.error("Error sending post request:", error);
     }
   };
 
@@ -186,7 +192,7 @@ function RequestApproval() {
   };
 
   return (
-    <div className="container">
+    <div>
       {showAlert.type && (
         <div
           style={{
@@ -316,7 +322,6 @@ function RequestApproval() {
                       <TableCell>
                         <Checkbox
                           name="group1"
-                          className="mx-4"
                           onChange={(e) =>
                             handleProductSelectionChange(e, product)
                           }
@@ -328,7 +333,7 @@ function RequestApproval() {
               </Table>
             </TableContainer>
 
-            <FormControl className="mt-4" sx={{ width: "310px" }}>
+            <FormControl className="mt-4" sx={{ width: "306px" }}>
               <InputLabel id="delivery-type-label">
                 Select delivery type
               </InputLabel>
@@ -339,7 +344,7 @@ function RequestApproval() {
                 onChange={handleDeliveryTypeChange}
                 label="Select delivery type"
               >
-                <MenuItem value="">Select delivery type</MenuItem>
+                {/* <MenuItem value="">Select delivery type</MenuItem> */}
                 {deliveryTypes.map((type, index) => (
                   <MenuItem key={index} value={type.deliveryTypeValue}>
                     {type.deliveryTypeText}
@@ -425,7 +430,7 @@ function RequestApproval() {
                           backgroundColor: "#3d3d3d",
                           color: "white",
                         }}
-                        align="left"
+                        align="center"
                       >
                         View
                       </TableCell>
