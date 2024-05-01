@@ -6,6 +6,8 @@ import {
   faLock,
   faIdBadge,
   faBriefcase,
+  faEyeSlash,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
@@ -27,6 +29,8 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserTypeOptions = async () => {
@@ -42,6 +46,14 @@ const Register = () => {
 
     fetchUserTypeOptions();
   }, []);
+
+  const togglePasswordVisibility = (field) => {
+    if (field === "password") {
+      setShowPassword(!showPassword);
+    } else if (field === "confirmPassword") {
+      setShowConfirmPassword(!showConfirmPassword);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -132,7 +144,7 @@ const Register = () => {
                   id="userType"
                   value={userType}
                   onChange={(e) => setUserType(e.target.value)}
-                  label="UserType"
+                  label="User Type"
                   size="small"
                   required
                 >
@@ -191,7 +203,7 @@ const Register = () => {
                 size="small"
                 style={{ width: "270px" }}
                 id="username"
-                label="UserName"
+                label="User Name"
                 variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -202,14 +214,17 @@ const Register = () => {
           <div className="form-group">
             <div className="input-group">
               <div className="input-group-prepend">
-                <span className="input-group-text">
-                  <FontAwesomeIcon icon={faLock} />
+                <span
+                  className="input-group-text"
+                  onClick={() => togglePasswordVisibility("password")}
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                 </span>
               </div>
               <TextField
                 size="small"
                 style={{ width: "270px" }}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 label="Password"
                 variant="outlined"
@@ -222,16 +237,21 @@ const Register = () => {
           <div className="form-group">
             <div className="input-group">
               <div className="input-group-prepend">
-                <span className="input-group-text">
-                  <FontAwesomeIcon icon={faLock} />
+                <span
+                  className="input-group-text"
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
+                >
+                  <FontAwesomeIcon
+                    icon={showConfirmPassword ? faEyeSlash : faEye}
+                  />
                 </span>
               </div>
               <TextField
                 size="small"
                 style={{ width: "270px" }}
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
-                label="ConfirmPassword"
+                label="Confirm Password"
                 variant="outlined"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

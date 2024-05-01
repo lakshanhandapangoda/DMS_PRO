@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faBuilding } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faLock,
+  faBuilding,
+  faEyeSlash,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import baseURL from "./apiConfig";
 import { withRouter } from "react-router-dom";
@@ -28,6 +34,9 @@ const Login = ({ history }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Function to fetch and set the available branches
   const fetchBranches = async () => {
@@ -48,6 +57,16 @@ const Login = ({ history }) => {
     } catch (error) {
       console.error("Error occurred while fetching branches:", error);
       setError("Failed to fetch branches");
+    }
+  };
+
+  const togglePasswordVisibility = (field) => {
+    if (field === "password") {
+      setShowPassword(!showPassword);
+    } else if (field === "newPassword") {
+      setShowNewPassword(!showNewPassword);
+    } else if (field === "confirmPassword") {
+      setShowConfirmPassword(!showConfirmPassword);
     }
   };
 
@@ -218,14 +237,17 @@ const Login = ({ history }) => {
           <div className="form-group">
             <div className="input-group">
               <div className="input-group-prepend">
-                <span className="input-group-text">
-                  <FontAwesomeIcon icon={faLock} />
+                <span
+                  className="input-group-text"
+                  onClick={() => togglePasswordVisibility("password")}
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                 </span>
               </div>
               <TextField
                 size="small"
                 style={{ width: "268px" }}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 label="Password"
                 variant="outlined"
@@ -297,7 +319,7 @@ const Login = ({ history }) => {
           <Modal show={show} onHide={handleClose}>
             <Modal.Header>
               <Modal.Title style={{ fontSize: "18px" }}>
-                Change Your Password
+                Reset Your Password
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -309,20 +331,25 @@ const Login = ({ history }) => {
                 <div className="form-group mb-3">
                   <div className="input-group">
                     <div className="input-group-prepend">
-                      <span className="input-group-text">
-                        <FontAwesomeIcon icon={faLock} />
+                      <span
+                        className="input-group-text"
+                        onClick={() => togglePasswordVisibility("newPassword")}
+                      >
+                        <FontAwesomeIcon
+                          icon={showNewPassword ? faEyeSlash : faEye}
+                        />
                       </span>
                     </div>
                     <TextField
                       size="small"
-                      type="password"
+                      type={showNewPassword ? "text" : "password"}
                       id="newPassword"
-                      label="NewPassword"
+                      label="New Password"
                       variant="outlined"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
-                      sx={{ width: 425 }}
+                      sx={{ width: 400 }}
                     />
                   </div>
                 </div>
@@ -330,20 +357,27 @@ const Login = ({ history }) => {
                 <div className="form-group">
                   <div className="input-group">
                     <div className="input-group-prepend">
-                      <span className="input-group-text">
-                        <FontAwesomeIcon icon={faLock} />
+                      <span
+                        className="input-group-text"
+                        onClick={() =>
+                          togglePasswordVisibility("confirmPassword")
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={showConfirmPassword ? faEyeSlash : faEye}
+                        />
                       </span>
                     </div>
                     <TextField
                       size="small"
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       id="ConfirmPassword"
-                      label="ConfirmPassword"
+                      label="Confirm Password"
                       variant="outlined"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      sx={{ width: 425 }}
+                      sx={{ width: 400 }}
                     />
                   </div>
                 </div>
