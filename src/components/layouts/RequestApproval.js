@@ -312,7 +312,7 @@ function RequestApproval() {
                   {unauthorizedProducts.map((product, index) => (
                     <TableRow key={index}>
                       <TableCell align="left">{product.productId}</TableCell>
-                      <TableCell align="left" style={{ maxWidth: "150px" }}>
+                      <TableCell align="left" style={{ maxWidth: "180px" }}>
                         {product.productDescription}
                       </TableCell>
                       <TableCell align="left">
@@ -390,7 +390,7 @@ function RequestApproval() {
               Pending Delivery
             </Card.Header>
             <Card.Body>
-              <TableContainer style={{ maxHeight: "400px", overflowY: "auto" }}>
+              <TableContainer style={{ maxHeight: "550px", overflowY: "auto" }}>
                 <Table stickyHeader aria-label="sticky table" size="small">
                   <TableHead>
                     <TableRow>

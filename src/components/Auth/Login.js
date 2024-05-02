@@ -246,7 +246,7 @@ const Login = ({ history }) => {
               </div>
               <TextField
                 size="small"
-                style={{ width: "268px" }}
+                style={{ width: "265px" }}
                 type={showPassword ? "text" : "password"}
                 id="password"
                 label="Password"

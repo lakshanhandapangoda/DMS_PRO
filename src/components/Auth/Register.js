@@ -223,7 +223,7 @@ const Register = () => {
               </div>
               <TextField
                 size="small"
-                style={{ width: "270px" }}
+                style={{ width: "266px" }}
                 type={showPassword ? "text" : "password"}
                 id="password"
                 label="Password"
@@ -248,7 +248,7 @@ const Register = () => {
               </div>
               <TextField
                 size="small"
-                style={{ width: "270px" }}
+                style={{ width: "266px" }}
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 label="Confirm Password"

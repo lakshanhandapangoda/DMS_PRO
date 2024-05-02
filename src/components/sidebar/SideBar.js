@@ -51,11 +51,11 @@ const SideBar = ({ isOpen, toggle }) => {
           &times;
         </span>
         <div>
-          <img
+          {/* <img
             src={require("../Auth/logo (2).png")}
             alt="Logo"
             style={{ width: "250px", height: "80px", margin: "auto" }}
-          />
+          /> */}
         </div>
       </div>
       <div className="side-menu" style={{ overflowY: "hidden" }}>
@@ -121,6 +121,17 @@ const SideBar = ({ isOpen, toggle }) => {
             >
               <FontAwesomeIcon icon={faBuilding} className="mr-2" />
               Request Department
+            </NavLink>
+          </NavItem>
+
+          <NavItem>
+            <NavLink
+              tag={Link}
+              to={"/accept-deliverys"}
+              style={{ color: "#fff" }}
+            >
+              <FontAwesomeIcon icon={faBuilding} className="mr-2" />
+              Accept Delivery
             </NavLink>
           </NavItem>
         </Nav>
