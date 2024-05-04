@@ -50,8 +50,14 @@ function ItemRequest() {
     const fetchProductList = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
+        const branchCode = localStorage.getItem("branchCode");
+        const response = await axios.post(
           `${baseURL}BranchRequestItems/GetAllActiveProductList`,
+          {
+            branchCode: branchCode,
+            refNo: 0,
+            userID: "",
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -60,12 +66,9 @@ function ItemRequest() {
         );
         setProductList(response.data);
       } catch (error) {
-        if (error.response.status === 401) {
-          window.location.href = "/login";
-        }
         setShowAlert({
           type: "error",
-          message: error.response.data.toString(),
+          message: error.toString(),
         });
         setTimeout(() => setShowAlert(false), 3000);
         console.error("Error fetching product list:", error);
@@ -73,9 +76,39 @@ function ItemRequest() {
     };
 
     fetchProductList();
+
+    fetchAuthorizeProductList();
   }, []);
 
-  const handleAddToCart = () => {
+  const fetchAuthorizeProductList = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const branchCode = localStorage.getItem("branchCode");
+      const response = await axios.post(
+        `${baseURL}BranchRequestItems/GetUnAuthorizeItemRequestList`,
+        {
+          branchCode: branchCode,
+          refNo: 0,
+          userID: "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setItems(response.data);
+    } catch (error) {
+      setShowAlert({
+        type: "error",
+        message: error.toString(),
+      });
+      setTimeout(() => setShowAlert(false), 3000);
+      console.error("Error fetching product list:", error);
+    }
+  };
+
+  const handleAddToCart = async () => {
     const currentDate = new Date();
     const selectedProduct = productList.find(
       (product) => product.productId === productId
@@ -91,7 +124,7 @@ function ItemRequest() {
     }
 
     if (selectedProduct) {
-      const existingItemIndex = items.findIndex(
+      /* const existingItemIndex = items.findIndex(
         (item) => item.productId === selectedProduct.productId
       );
 
@@ -111,6 +144,54 @@ function ItemRequest() {
           requestedBy: userName,
         };
         setItems([...items, newItem]);
+      }*/
+
+      try {
+        const token = localStorage.getItem("token");
+        const branchCode = localStorage.getItem("branchCode");
+        const requestData = [
+          {
+            branchCode: branchCode,
+            productId: selectedProduct.productId,
+            productDescription: selectedProduct.productDescription || "",
+            uom: selectedProduct.uom,
+            quantity: parseFloat(quantity),
+            requestBy: localStorage.getItem("user_id"),
+            requestDate: new Date().toISOString(),
+            requestWorkStation: "::1",
+          },
+        ];
+
+        const response = await axios.post(
+          `${baseURL}BranchRequestItems/PostItemRequest`,
+          requestData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              accept: "*/*",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setShowAlert({
+          type: "success",
+          message: "Request submited successful",
+        });
+        setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+        console.log("Request submited successful:", response.data);
+        fetchAuthorizeProductList();
+      } catch (error) {
+        if (error.response.status === 401) {
+          //  window.location.href = "/login";
+        }
+
+        setShowAlert({
+          type: "error",
+          message: error.response.data.toString(),
+        });
+        setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+        console.error("Error during request:", error);
       }
 
       setProductId("");
@@ -122,18 +203,108 @@ function ItemRequest() {
     }
   };
 
-  const handleDeleteItem = (index) => {
-    const updatedItems = [...items];
-    updatedItems.splice(index, 1);
-    setItems(updatedItems);
+  const handleDeleteItem = async (item) => {
+    //const updatedItems = [...items];
+    // updatedItems.splice(index, 1);
+    //setItems(updatedItems);
+
+    try {
+      const token = localStorage.getItem("token");
+      const branchCode = localStorage.getItem("branchCode");
+      const requestData = {
+        branchCode: branchCode,
+        productId: item.productId,
+        productDescription: item.productDescription || "",
+        uom: item.uom,
+        quantity: parseFloat(item.quantity),
+        requestBy: localStorage.getItem("user_id"),
+        requestDate: new Date().toISOString(),
+        requestWorkStation: "::1",
+      };
+
+      const response = await axios.post(
+        `${baseURL}BranchRequestItems/DeleteUnAuthorizedItem`,
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setShowAlert({
+        type: "success",
+        message: "Request deleted successful",
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      fetchAuthorizeProductList();
+    } catch (error) {
+      if (error.response.status === 401) {
+        //  window.location.href = "/login";
+      }
+
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      console.error("Error during request:", error);
+    }
   };
 
-  const handleEditItem = (index) => {
+  const handleEditItem = async (index) => {
     setEditIndex(index);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async (item) => {
     setEditIndex(null);
+    console.log(item);
+    try {
+      const token = localStorage.getItem("token");
+      const branchCode = localStorage.getItem("branchCode");
+      const requestData = {
+        branchCode: branchCode,
+        productId: item.productId,
+        productDescription: item.productDescription || "",
+        uom: item.uom,
+        quantity: parseFloat(item.quantity),
+        requestBy: localStorage.getItem("user_id"),
+        requestDate: new Date().toISOString(),
+        requestWorkStation: "::1",
+      };
+
+      const response = await axios.post(
+        `${baseURL}BranchRequestItems/UpdateUnAuthorizedItem`,
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setShowAlert({
+        type: "success",
+        message: "Request updated successful",
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      fetchAuthorizeProductList();
+    } catch (error) {
+      if (error.response.status === 401) {
+        //  window.location.href = "/login";
+      }
+
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
+      console.error("Error during request:", error);
+    }
   };
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -197,6 +368,7 @@ function ItemRequest() {
     if (newValue) {
       setProductDescription(newValue.productDescription);
       setProductId(newValue.productId);
+      setQuantity(newValue.unAuthorizeQuantity);
     } else {
       setProductDescription("");
       setProductId("");
@@ -285,6 +457,7 @@ function ItemRequest() {
             label="Quantity"
             variant="outlined"
             type="number"
+            inputProps={{ min: "0" }} // Use inputProps to set the minimum value
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             required
@@ -406,6 +579,7 @@ function ItemRequest() {
                         {editIndex === index ? (
                           <input
                             type="number"
+                            min="0"
                             value={item.quantity}
                             onChange={(e) =>
                               setItems(
@@ -423,15 +597,17 @@ function ItemRequest() {
                         )}
                       </TableCell>
                       <TableCell align="left">{item.uom}</TableCell>
-                      <TableCell align="left">{item.requestedBy}</TableCell>
-                      <TableCell align="left">{item.requestDate}</TableCell>
+                      <TableCell align="left">{item.requestBy}</TableCell>
+                      <TableCell align="left">
+                        {new Date(item.requestDate).toLocaleString()}
+                      </TableCell>
                       <TableCell align="left">
                         {editIndex === index ? (
                           <Button
                             variant="contained"
                             color="success"
                             size="small"
-                            onClick={handleSaveEdit}
+                            onClick={() => handleSaveEdit(item)}
                           >
                             <FontAwesomeIcon icon={faSave} />
                           </Button>
@@ -450,7 +626,7 @@ function ItemRequest() {
                           color="error"
                           size="small"
                           className="mx-2"
-                          onClick={() => handleDeleteItem(index)}
+                          onClick={() => handleDeleteItem(item)}
                         >
                           <FontAwesomeIcon icon={faTrash} />
                         </Button>
@@ -461,16 +637,6 @@ function ItemRequest() {
               </Table>
             </TableContainer>
           </div>
-
-          <Button
-            color="primary"
-            variant="contained"
-            className="mt-4"
-            onClick={handleSubmit}
-            style={{ display: items.length === 0 ? "none" : "block" }}
-          >
-            Submit
-          </Button>
         </Card.Body>
       </Card>
     </div>

@@ -30,6 +30,7 @@ const ViewRequest = () => {
     direction: "ascending",
   });
   const location = useLocation();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {

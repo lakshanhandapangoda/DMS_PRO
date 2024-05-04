@@ -33,7 +33,7 @@ const AssignUser = () => {
   const [userType, setUserType] = useState("");
   const [selectedModule, setSelectedModule] = useState("");
   const [assignedModules, setAssignedModules] = useState([]);
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     if (user) {
       setUserId(user.userId);
@@ -56,24 +56,6 @@ const AssignUser = () => {
           let assignedFunctions = [];
           let i = 0;
           for (const module of response.data) {
-            if (i == 0) {
-              setSelectedModule(response.data[0].moduleId);
-              try {
-                const token = localStorage.getItem("token");
-                const response1 = await axios.get(
-                  `${baseURL}AppUser/GetAppFunctionsByModule/${response.data[0].moduleId}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  }
-                );
-                setAvailableFunction(response1.data);
-              } catch (error) {
-                console.error("Error fetching available functions:", error);
-              }
-            }
-            i++;
             const functionResponse = await axios.get(
               `${baseURL}AppUser/GetAssignedFunctions/${user.userId}/${module.moduleId}`,
               {
@@ -94,7 +76,38 @@ const AssignUser = () => {
               color: "#bbc7be",
             }));
             console.log("function", assignedFunctions);
-          }
+
+            if (i == 0) {
+              setSelectedModule(response.data[0].moduleId);
+              try {
+                const token = localStorage.getItem("token");
+                const response1 = await axios.get(
+                  `${baseURL}AppUser/GetAppFunctionsByModule/${response.data[0].moduleId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+
+                // Filtering out assigned functions from available functions
+                const updatedAvailableFunctions = response1.data.filter(
+                  (availableFunc) => {
+                    return !assignedFunctions.some((assignedFunc) => {
+                      return (
+                        assignedFunc.functionId === availableFunc.functionId
+                      );
+                    });
+                  }
+                );
+
+                setAvailableFunction(updatedAvailableFunctions);
+              } catch (error) {
+                console.error("Error fetching available functions:", error);
+              }
+            }
+            i++;
+          } //
           setAssignedFunction(assignedFunctions);
         } catch (error) {
           console.error("Error fetching assigned modules:", error);

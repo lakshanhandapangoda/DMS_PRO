@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 
 const Login = ({ history }) => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [branch_name, setBranch_name] = useState("");
@@ -38,6 +39,7 @@ const Login = ({ history }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
+  console.log(apiUrl);
   // Function to fetch and set the available branches
   const fetchBranches = async () => {
     try {

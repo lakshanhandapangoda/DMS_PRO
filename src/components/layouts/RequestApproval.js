@@ -35,7 +35,7 @@ function RequestApproval() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedDeliveryType, setSelectedDeliveryType] = useState("");
   const [showAlert, setShowAlert] = useState({ type: "", message: "" });
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     fetchPendingDeliveries();
     fetchUnauthorizedProducts();

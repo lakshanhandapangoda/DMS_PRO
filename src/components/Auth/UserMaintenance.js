@@ -32,7 +32,7 @@ function UserMaintenance() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState(""); // State to store sorting column
   const [sortDirection, setSortDirection] = useState("asc"); // State to store sorting direction
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -319,7 +319,7 @@ function UserMaintenance() {
                       <StyledTableRow key={index}>
                         <TableCell align="left">{user.userId}</TableCell>
                         <TableCell align="left">{user.userName}</TableCell>
-                        <TableCell align="center">
+                        <TableCell align="left">
                           <Link
                             to={{
                               pathname: `/assign-user/${user.userId}`,
@@ -350,37 +350,39 @@ function UserMaintenance() {
                             <FontAwesomeIcon icon={faUnlock} /> Reset
                           </Button>
 
-                          <Button
-                            style={{
-                              padding: "0.25rem 0.5rem",
-                              fontSize: "0.75rem",
-                              width: "80px",
-                            }}
-                            variant={
-                              user.userStatus === 1
-                                ? "outline-primary"
-                                : "outline-danger"
-                            }
-                            size="sm"
-                            className="mr-2 mx-1"
-                            onClick={() =>
-                              updateUserStatus(
-                                user.userId,
-                                user.branchCode,
-                                user.userStatus === 1 ? 0 : 1
-                              )
-                            }
-                          >
-                            <FontAwesomeIcon
-                              icon={
+                          {user.userStatus !== 2 && (
+                            <Button
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.75rem",
+                                width: "80px",
+                              }}
+                              variant={
                                 user.userStatus === 1
-                                  ? faUserAlt
-                                  : faUserAltSlash // User is inactive
-                                // User is active
+                                  ? "outline-primary"
+                                  : "outline-danger"
                               }
-                            />{" "}
-                            {user.userStatus === 1 ? "Active" : "Inactive"}
-                          </Button>
+                              size="sm"
+                              className="mr-2 mx-1"
+                              onClick={() =>
+                                updateUserStatus(
+                                  user.userId,
+                                  user.branchCode,
+                                  user.userStatus === 1 ? 0 : 1
+                                )
+                              }
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  user.userStatus === 1
+                                    ? faUserAlt
+                                    : faUserAltSlash // User is inactive
+                                  // User is active
+                                }
+                              />{" "}
+                              {user.userStatus === 1 ? "Active" : "Inactive"}
+                            </Button>
+                          )}
                         </TableCell>
                       </StyledTableRow>
                     ))}
