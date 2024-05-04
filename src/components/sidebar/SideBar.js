@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartPlus,
-  faCheckCircle,
   faBuilding,
   faUsers,
   faChartBar,
+  faClipboardList,
+  faCheckCircle,
+  faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import { NavItem, NavLink, Nav } from "reactstrap";
 import classNames from "classnames";
@@ -119,7 +121,7 @@ const SideBar = ({ isOpen, toggle }) => {
               to={"/request-department"}
               style={{ color: "#fff" }}
             >
-              <FontAwesomeIcon icon={faBuilding} className="mr-2" />
+              <FontAwesomeIcon icon={faClipboardList} className="mr-2" />
               Request Department
             </NavLink>
           </NavItem>
@@ -130,8 +132,19 @@ const SideBar = ({ isOpen, toggle }) => {
               to={"/accept-deliverys"}
               style={{ color: "#fff" }}
             >
-              <FontAwesomeIcon icon={faBuilding} className="mr-2" />
+              <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
               Accept Delivery
+            </NavLink>
+          </NavItem>
+
+          <NavItem>
+            <NavLink
+              tag={Link}
+              to={"/intarnal-issue"}
+              style={{ color: "#fff" }}
+            >
+              <FontAwesomeIcon icon={faTasks} className="mr-2" />
+              Intarnal Issue
             </NavLink>
           </NavItem>
         </Nav>

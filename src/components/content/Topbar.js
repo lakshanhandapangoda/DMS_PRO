@@ -12,6 +12,8 @@ import {
   faChartBar,
   faClock,
   faClipboardList,
+  faCheckCircle,
+  faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -148,6 +150,24 @@ const Topbar = ({ toggleSidebar }) => {
           >
             <FontAwesomeIcon icon={faClipboardList} className="mx-2" />
             Request Department
+          </span>
+        )}
+
+        {location.pathname === "/accept-deliverys" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faCheckCircle} className="mx-2" />
+            Accept Deliverys
+          </span>
+        )}
+
+        {location.pathname === "/intarnal-issue" && (
+          <span
+            style={{ color: "white", fontSize: "15px", marginLeft: "10px" }}
+          >
+            <FontAwesomeIcon icon={faTasks} className="mx-2" />
+            Internal Issue
           </span>
         )}
 

@@ -22,6 +22,8 @@ import {
   faClock,
   faShoppingCart,
   faExclamationCircle,
+  faTimes,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
@@ -368,6 +370,7 @@ function RequestApproval() {
                 onClick={handleClear}
                 className=" mx-2"
               >
+                <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
                 Clear
               </Button>
               <Button
@@ -376,7 +379,8 @@ function RequestApproval() {
                 onClick={handleExit}
                 className=""
               >
-                Exit
+                <FontAwesomeIcon icon={faArrowLeft} className="me-1 mx-2" />
+                Back
               </Button>
             </div>
           </Card.Body>

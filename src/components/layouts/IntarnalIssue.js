@@ -30,7 +30,7 @@ import {
   Button,
 } from "@mui/material";
 
-function ItemRequest() {
+function IntarnalIssue() {
   const [items, setItems] = useState([]);
   const [productId, setProductId] = useState("");
   const [requestDate, setRequestDate] = useState("");
@@ -53,7 +53,7 @@ function ItemRequest() {
         const token = localStorage.getItem("token");
         const branchCode = localStorage.getItem("branchCode");
         const response = await axios.post(
-          `${baseURL}BranchRequestItems/GetAllActiveProductList`,
+          `http://119.8.182.69/PBBInventoryAPI/api/InternalIssue/GetAllActiveProductList`,
           {
             branchCode: branchCode,
             refNo: 0,
@@ -673,4 +673,4 @@ function ItemRequest() {
   );
 }
 
-export default ItemRequest;
+export default IntarnalIssue;

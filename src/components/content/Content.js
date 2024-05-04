@@ -14,6 +14,7 @@ import UserMaintenance from "../Auth/UserMaintenance";
 import Topbar from "./Topbar";
 import ViewRequest from "../layouts/ViewRequest";
 import AcceptDelivery from "../layouts/AcceptDeliverys";
+import IntarnalIssue from "../layouts/IntarnalIssue";
 
 const Content = ({ sidebarIsOpen, toggleSidebar }) => (
   <Container
@@ -39,6 +40,8 @@ const Content = ({ sidebarIsOpen, toggleSidebar }) => (
       <Route exact path="/register" component={Register} />
       <Route exact path="/view-request/:refNo" component={ViewRequest} />
       <Route exact path="/accept-deliverys" component={AcceptDelivery} />
+      <Route exact path="/accept-deliverys" component={AcceptDelivery} />
+      <Route exact path="/intarnal-issue" component={IntarnalIssue} />
       <Route
         exact
         path="/assign-user/:userId"
