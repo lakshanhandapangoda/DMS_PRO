@@ -438,17 +438,19 @@ const AcceptDelivery = () => {
                       </TableCell>
                       <TableCell align="left">{item.uom}</TableCell>
                       <TableCell align="left">{item.quantity}</TableCell>
-                      <TextField
-                        size="small"
-                        fullWidth
-                        id={`comments-${index}`}
-                        value={item.comments}
-                        onChange={(e) => {
-                          const updatedResponse = [...responseBottomTable];
-                          updatedResponse[index].comments = e.target.value;
-                          setResponseBottomTable(updatedResponse);
-                        }}
-                      />
+                      <TableCell align="left">
+                        <TextField
+                          size="small"
+                          fullWidth
+                          id={`comments-${index}`}
+                          value={item.comments}
+                          onChange={(e) => {
+                            const updatedResponse = [...responseBottomTable];
+                            updatedResponse[index].comments = e.target.value;
+                            setResponseBottomTable(updatedResponse);
+                          }}
+                        />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

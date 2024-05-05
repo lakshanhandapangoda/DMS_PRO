@@ -58,6 +58,14 @@ function RequestApproval() {
       );
       setPendingDeliveries(response.data);
     } catch (error) {
+      if (error.response.status === 401) {
+        window.location.href = "/login";
+      }
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
       console.error("Error fetching pending deliveries:", error);
     }
   };
@@ -78,6 +86,11 @@ function RequestApproval() {
       if (error.response.status === 401) {
         window.location.href = "/login";
       }
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
       console.error("Error fetching delivery types:", error);
     }
   };

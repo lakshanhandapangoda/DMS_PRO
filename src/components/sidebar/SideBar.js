@@ -102,19 +102,24 @@ const SideBar = ({ isOpen, toggle }) => {
                   </NavLink>
                 </NavItem>
               );
+            } else if (item.functionName === "Request Approval") {
+              return (
+                <NavItem>
+                  <NavLink
+                    tag={Link}
+                    to={"/request-approval"}
+                    style={{ color: "#fff" }}
+                  >
+                    <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                    Request Approval
+                  </NavLink>
+                </NavItem>
+              );
+            } else if (item.functionName === "Request Approval") {
             }
             return null;
           })}
-          <NavItem>
-            <NavLink
-              tag={Link}
-              to={"/request-approval"}
-              style={{ color: "#fff" }}
-            >
-              <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
-              Request Approval
-            </NavLink>
-          </NavItem>
+
           <NavItem>
             <NavLink
               tag={Link}

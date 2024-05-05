@@ -54,6 +54,11 @@ function UserMaintenance() {
       if (error.response.status === 401) {
         window.location.href = "/login";
       }
+      setShowAlert({
+        type: "error",
+        message: error.response.data.toString(),
+      });
+      setTimeout(() => setShowAlert(false), 3000);
     }
   };
 
