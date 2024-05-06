@@ -376,9 +376,9 @@ function ItemRequest() {
     }
   };
 
-  const handleCancel = () => {
-    setItems([]);
-  };
+  // const handleCancel = () => {
+  //   setItems([]);
+  // };
 
   const handleGoBack = () => {
     window.history.back();
@@ -647,14 +647,14 @@ function ItemRequest() {
             </TableContainer>
 
             <div className="d-flex justify-content-start mt-4">
-              <Button
+              {/* <Button
                 color="warning"
                 variant="contained"
                 onClick={handleCancel}
               >
                 <FontAwesomeIcon icon={faTimes} className="me-1 mx-2" />
                 Clear
-              </Button>
+              </Button> */}
 
               <Button
                 color="secondary"

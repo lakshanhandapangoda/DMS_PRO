@@ -120,7 +120,7 @@ const SideBar = ({ isOpen, toggle }) => {
             return null;
           })}
 
-          <NavItem>
+          {/* <NavItem>
             <NavLink
               tag={Link}
               to={"/request-department"}
@@ -129,7 +129,7 @@ const SideBar = ({ isOpen, toggle }) => {
               <FontAwesomeIcon icon={faClipboardList} className="mr-2" />
               Request Department
             </NavLink>
-          </NavItem>
+          </NavItem> */}
 
           <NavItem>
             <NavLink

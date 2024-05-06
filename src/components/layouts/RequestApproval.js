@@ -174,8 +174,10 @@ function RequestApproval() {
       console.log("Post request sent successfully:", response.data);
 
       // Refetch data after successful submission
-      fetchPendingDeliveries();
+
+      setUnauthorizedProducts([]);
       fetchUnauthorizedProducts();
+      fetchPendingDeliveries();
       fetchDeliveryTypes();
 
       handleClear();
@@ -183,6 +185,8 @@ function RequestApproval() {
       setSelectedDeliveryType("");
     } catch (error) {
       // Handle errors here
+      setUnauthorizedProducts([]);
+      fetchUnauthorizedProducts();
       console.error("Error sending post request:", error);
       if (error.response.status === 401) {
         window.location.href = "/login";
