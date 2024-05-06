@@ -472,7 +472,7 @@ function ItemRequest() {
             required
           />
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="justify-content-start">
           <Button
             color="success"
             variant="contained"

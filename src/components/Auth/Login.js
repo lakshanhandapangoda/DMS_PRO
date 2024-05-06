@@ -156,6 +156,7 @@ const Login = ({ history }) => {
 
       setSuccessMessage("Password reset successfully."); // Set success message
       handleClose();
+      setPassword("");
     } catch (error) {
       if (error.response.status === 401) {
         window.location.href = "/login";

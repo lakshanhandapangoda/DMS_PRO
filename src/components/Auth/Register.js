@@ -18,7 +18,13 @@ import {
   Select,
   MenuItem,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 const Register = () => {
   const [userId, setUserId] = useState("");
@@ -31,6 +37,8 @@ const Register = () => {
   const [success, setSuccess] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const history = useHistory();
+  const [confirm, setConfirm] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -96,7 +104,7 @@ const Register = () => {
       if (response.status === 201) {
         setSuccess("A new user has been successfully created");
         setTimeout(() => setSuccess(null), 10000);
-        window.location.href = "/login";
+        setConfirm(true);
       }
     } catch (error) {
       setError(error.response.data.toString());
@@ -104,6 +112,10 @@ const Register = () => {
         setError("");
       }, 3000);
     }
+  };
+
+  const handleLogin = () => {
+    history.push("/login");
   };
 
   return (
@@ -277,6 +289,17 @@ const Register = () => {
           </Link>
         </p>
       </div>
+      <Dialog open={confirm} onClose={() => setConfirm(false)}>
+        <DialogContent>
+          <Alert severity="success">
+            <AlertTitle>Success</AlertTitle>
+            ID <strong>{userId}</strong>. Call manager to activate
+          </Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLogin}>OK</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
