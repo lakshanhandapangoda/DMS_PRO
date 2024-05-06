@@ -115,7 +115,19 @@ const SideBar = ({ isOpen, toggle }) => {
                   </NavLink>
                 </NavItem>
               );
-            } else if (item.functionName === "Request Approval") {
+            } else if (item.functionName === "Accept Delivery") {
+              return (
+                <NavItem>
+                  <NavLink
+                    tag={Link}
+                    to={"/accept-deliverys"}
+                    style={{ color: "#fff" }}
+                  >
+                    <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                    Accept Delivery
+                  </NavLink>
+                </NavItem>
+              );
             }
             return null;
           })}
@@ -131,7 +143,7 @@ const SideBar = ({ isOpen, toggle }) => {
             </NavLink>
           </NavItem> */}
 
-          <NavItem>
+          {/* <NavItem>
             <NavLink
               tag={Link}
               to={"/accept-deliverys"}
@@ -140,7 +152,7 @@ const SideBar = ({ isOpen, toggle }) => {
               <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
               Accept Delivery
             </NavLink>
-          </NavItem>
+          </NavItem> */}
 
           <NavItem>
             <NavLink

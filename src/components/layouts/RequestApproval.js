@@ -143,7 +143,7 @@ function RequestApproval() {
       const payload = selectedProducts.map((product) => ({
         branchFlag: 2,
         branchCode: branchCode,
-        seqNo: 2,
+        seqNo: product.seqNo,
         productId: product.productId,
         productDescription: product.productDescription,
         txUnitOfMeasure: product.txUnitOfMeasure,
@@ -184,9 +184,10 @@ function RequestApproval() {
       setSelectedProducts([]);
       setSelectedDeliveryType("");
     } catch (error) {
-      // Handle errors here
+      setSelectedProducts([]);
       setUnauthorizedProducts([]);
       fetchUnauthorizedProducts();
+      setSelectedDeliveryType("");
       console.error("Error sending post request:", error);
       if (error.response.status === 401) {
         window.location.href = "/login";
