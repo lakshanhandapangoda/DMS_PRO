@@ -426,16 +426,7 @@ function RequestApproval() {
                       >
                         Ref No
                       </TableCell>
-                      <TableCell
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#3d3d3d",
-                          color: "white",
-                        }}
-                        align="left"
-                      >
-                        Date
-                      </TableCell>
+
                       <TableCell
                         style={{
                           fontWeight: "bold",
@@ -462,18 +453,6 @@ function RequestApproval() {
                     {pendingDeliveries.map((delivery, index) => (
                       <TableRow key={index}>
                         <TableCell>{delivery.refNo}</TableCell>
-                        <TableCell
-                          style={{
-                            maxWidth: "120px",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          <div>
-                            {new Date(delivery.date).toLocaleDateString()}
-                          </div>
-                        </TableCell>
 
                         <TableCell>{delivery.deliveyTypeText}</TableCell>
                         <TableCell>

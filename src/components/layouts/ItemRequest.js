@@ -635,7 +635,7 @@ function ItemRequest() {
                       </TableCell>
                       <TableCell align="left">{item.requestBy}</TableCell>
                       <TableCell align="left">
-                        {new Date(item.requestDate).toLocaleString()}
+                        {new Date(item.requestDate).toLocaleDateString()}
                       </TableCell>
                       <TableCell align="left">
                         {editIndex === index ? (
