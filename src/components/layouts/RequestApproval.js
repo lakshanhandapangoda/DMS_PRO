@@ -37,7 +37,6 @@ function RequestApproval() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedDeliveryType, setSelectedDeliveryType] = useState("");
   const [showAlert, setShowAlert] = useState({ type: "", message: "" });
-  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     fetchPendingDeliveries();
     fetchUnauthorizedProducts();
@@ -139,6 +138,7 @@ function RequestApproval() {
       const branchCode = localStorage.getItem("branchCode");
       const token = localStorage.getItem("token");
       const user_id = localStorage.getItem("user_id");
+      const ipAddress = localStorage.getItem("ipAddress");
 
       const payload = selectedProducts.map((product) => ({
         branchFlag: 2,
@@ -151,9 +151,9 @@ function RequestApproval() {
         deliveryType: selectedDeliveryType,
         createdBy: user_id,
         authorizedBy: user_id,
-        createdWorkStation: "::1",
+        createdWorkStation: ipAddress,
         modifiedBy: user_id,
-        modifiedWorkStation: "::1",
+        modifiedWorkStation: ipAddress,
       }));
 
       // Send POST request

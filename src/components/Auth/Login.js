@@ -56,6 +56,8 @@ const Login = ({ history }) => {
 
       setBranches(response.data["customerCode"]);
       setBranch_name(response.data["custSupName"]);
+      localStorage.setItem("branchCode", branches);
+      localStorage.setItem("ipAddress", response.data["ipAddress"]);
     } catch (error) {
       console.error("Error occurred while fetching branches:", error);
       setError("Failed to fetch branches");
@@ -81,11 +83,6 @@ const Login = ({ history }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const responseIp = await axios.get("https://api64.ipify.org?format=json");
-      const clientIp = responseIp.data.ip;
-      const ipParts = clientIp.split(".");
-      ipParts.pop();
-
       // const modifiedIp = ipParts.join(".");
       const response = await axios.post(`${baseURL}Authentication/Login`, {
         //  branchIP: modifiedIp,
@@ -96,7 +93,6 @@ const Login = ({ history }) => {
       });
       if (response.status === 200) {
         localStorage.setItem("user_id", username);
-        localStorage.setItem("branchCode", branches);
         localStorage.setItem("userName", response.data.userName);
         localStorage.setItem("token", response.data.tokenString);
         localStorage.setItem("status", response.data.status);
@@ -105,7 +101,6 @@ const Login = ({ history }) => {
         history.push("/");
       } else if (response.status === 202) {
         localStorage.setItem("user_id", username);
-        localStorage.setItem("branchCode", branches);
         localStorage.setItem("password", password);
         localStorage.setItem("userName", response.data.userName);
         localStorage.setItem("token", response.data.tokenString);

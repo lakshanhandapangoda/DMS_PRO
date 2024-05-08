@@ -45,13 +45,12 @@ const AcceptDelivery = () => {
 
         // Body parameters
         const bodyParams = {
-          branchCode: "0001010",
+          branchCode: branchCode,
           refNo: 0,
           userID: "",
         };
-
         const response = await axios.post(
-          `http://119.8.182.69/PBBInventoryAPI/api/DeliveryOrderAccept/GetPendingToAcceptDeliveryDetails`,
+          `${baseURL}DeliveryOrderAccept/GetPendingToAcceptDeliveryDetails`,
           bodyParams, // Pass the body parameters directly here
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -116,7 +115,7 @@ const AcceptDelivery = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://119.8.182.69/PBBInventoryAPI/api/DeliveryOrderAccept/ViewPendingToAcceptProductDetails`,
+        `${baseURL}DeliveryOrderAccept/ViewPendingToAcceptProductDetails`,
         {
           docCode: item.docCode,
           txnCode: item.txnCode,
@@ -158,7 +157,7 @@ const AcceptDelivery = () => {
       }));
 
       const response = await axios.post(
-        `http://119.8.182.69/PBBInventoryAPI/api/DeliveryOrderAccept/PostDeliveryAccept`,
+        `${baseURL}DeliveryOrderAccept/PostDeliveryAccept`,
         updatedData,
         {
           headers: { Authorization: `Bearer ${token}` },

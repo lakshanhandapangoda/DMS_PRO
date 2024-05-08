@@ -128,31 +128,10 @@ function ItemRequest() {
     }
 
     if (selectedProduct) {
-      /* const existingItemIndex = items.findIndex(
-        (item) => item.productId === selectedProduct.productId
-      );
-
-      if (existingItemIndex !== -1) {
-        const updatedItems = [...items];
-        updatedItems[existingItemIndex].quantity =
-          parseFloat(updatedItems[existingItemIndex].quantity) +
-          parseFloat(quantity);
-        setItems(updatedItems);
-      } else {
-        const newItem = {
-          productId: selectedProduct.productId,
-          productDescription: selectedProduct.productDescription,
-          quantity,
-          requestDate: currentDate.toLocaleString(),
-          uom: "SNG",
-          requestedBy: userName,
-        };
-        setItems([...items, newItem]);
-      }*/
-
       try {
         const token = localStorage.getItem("token");
         const branchCode = localStorage.getItem("branchCode");
+        const ipAddress = localStorage.getItem("ipAddress");
         const requestData = [
           {
             branchCode: branchCode,
@@ -162,7 +141,7 @@ function ItemRequest() {
             quantity: parseFloat(quantity),
             requestBy: localStorage.getItem("user_id"),
             requestDate: new Date().toISOString(),
-            requestWorkStation: "::1",
+            requestWorkStation: ipAddress,
           },
         ];
 
@@ -215,6 +194,7 @@ function ItemRequest() {
     try {
       const token = localStorage.getItem("token");
       const branchCode = localStorage.getItem("branchCode");
+      const ipAddress = localStorage.getItem("ipAddress");
       const requestData = {
         branchCode: branchCode,
         productId: item.productId,
@@ -223,7 +203,7 @@ function ItemRequest() {
         quantity: parseFloat(item.quantity),
         requestBy: localStorage.getItem("user_id"),
         requestDate: new Date().toISOString(),
-        requestWorkStation: "::1",
+        requestWorkStation: ipAddress,
       };
 
       const response = await axios.post(
@@ -268,6 +248,7 @@ function ItemRequest() {
     try {
       const token = localStorage.getItem("token");
       const branchCode = localStorage.getItem("branchCode");
+      const ipAddress = localStorage.getItem("ipAddress");
       const requestData = {
         branchCode: branchCode,
         productId: item.productId,
@@ -276,7 +257,7 @@ function ItemRequest() {
         quantity: parseFloat(item.quantity),
         requestBy: localStorage.getItem("user_id"),
         requestDate: new Date().toISOString(),
-        requestWorkStation: "::1",
+        requestWorkStation: ipAddress,
       };
 
       const response = await axios.post(
@@ -319,54 +300,6 @@ function ItemRequest() {
       border: 0,
     },
   }));
-
-  const handleSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const branchCode = localStorage.getItem("branchCode");
-      const requestData = items.map((item) => ({
-        branchCode: branchCode,
-        productId: item.productId,
-        productDescription: item.productDescription || "",
-        uom: item.uom,
-        quantity: parseFloat(item.quantity),
-        requestBy: localStorage.getItem("user_id"),
-        requestDate: new Date(item.requestDate).toISOString(),
-        requestWorkStation: "::1",
-      }));
-
-      const response = await axios.post(
-        `${baseURL}BranchRequestItems/PostItemRequest`,
-        requestData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            accept: "*/*",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setShowAlert({
-        type: "success",
-        message: "Request submited successful",
-      });
-      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
-      console.log("Request submited successful:", response.data);
-      setItems([]);
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/login";
-      }
-
-      setShowAlert({
-        type: "error",
-        message: error.response.data.toString(),
-      });
-      setTimeout(() => setShowAlert({ type: "", message: "" }), 3000);
-      console.error("Error during request:", error);
-    }
-  };
 
   const handleProductChange = (newValue) => {
     if (newValue) {

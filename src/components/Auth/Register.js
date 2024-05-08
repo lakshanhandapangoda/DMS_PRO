@@ -73,6 +73,8 @@ const Register = () => {
     }
 
     try {
+      const branchCode = localStorage.getItem("branchCode");
+      const ipAddress = localStorage.getItem("ipAddress");
       const response = await axios.post(
         `${baseURL}Authentication/PostUser`,
         {
@@ -91,7 +93,7 @@ const Register = () => {
           userType: parseFloat(userType),
           Password: password,
           UserName: username,
-          BranchCode: "0001010",
+          BranchCode: branchCode,
         },
         {
           headers: {

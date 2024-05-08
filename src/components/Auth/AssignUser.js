@@ -209,18 +209,21 @@ const AssignUser = () => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
+      const ipAddress = localStorage.getItem("ipAddress");
+      const branchCode = localStorage.getItem("branchCode");
       const postData = assignedFunction.map((role) => ({
         userId: userId,
-        branchCode: user.branchCode,
+        branchCode: branchCode,
+        //  branchCode: user.branchCode,
         appId: 0,
         functionId: role.functionId,
         createdBy: userId,
         moduleId: role.moduleId,
         createdDateTime: new Date().toISOString(),
-        createdWorkStation: ":1",
+        createdWorkStation: ipAddress,
         modifiedBy: userId,
         modifiedDateTime: new Date().toISOString(),
-        modifiedWorkStation: ":1",
+        modifiedWorkStation: ipAddress,
       }));
 
       const response = await axios.post(
@@ -261,12 +264,6 @@ const AssignUser = () => {
   };
 
   const handleCancel = () => {
-    // Reset state values or perform any other cancel actions
-    // setUserId("");
-    // setUserName("");
-    // setUserType("");
-    // setSelectedModule("");
-    // setAvailableFunction([]);
     setAssignedFunction([]);
   };
 
