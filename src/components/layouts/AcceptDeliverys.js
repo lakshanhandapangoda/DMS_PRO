@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import baseURL from "../Auth/apiConfig";
 import {
   faSort,
   faSortDown,
@@ -436,7 +437,7 @@ const AcceptDelivery = () => {
                         {item.productDescription}
                       </TableCell>
                       <TableCell align="left">{item.uom}</TableCell>
-                      <TableCell align="left">{item.quantity}</TableCell>
+                      <TableCell align="center">{item.quantity}</TableCell>
                       <TableCell align="left">
                         <TextField
                           size="small"

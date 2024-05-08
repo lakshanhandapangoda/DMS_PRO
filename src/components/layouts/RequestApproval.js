@@ -12,6 +12,10 @@ import {
   Select,
   MenuItem,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,6 +27,7 @@ import {
   faShoppingCart,
   faExclamationCircle,
   faTimes,
+  faSearch,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import Form from "react-bootstrap/Form";
@@ -37,6 +42,10 @@ function RequestApproval() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedDeliveryType, setSelectedDeliveryType] = useState("");
   const [showAlert, setShowAlert] = useState({ type: "", message: "" });
+  const [confirm, setConfirm] = useState(false);
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     fetchPendingDeliveries();
     fetchUnauthorizedProducts();
@@ -210,6 +219,51 @@ function RequestApproval() {
   const handleExit = () => {
     window.history.back();
   };
+
+  const itemView = async (refNumber) => {
+    console.log("nn", refNumber);
+    setConfirm(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const branchCode = localStorage.getItem("branchCode");
+      const response = await axios.get(
+        `${baseURL}BranchRequestItems/ViewPendingDeliveryDetails/${refNumber}/2/${branchCode}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setData(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        window.location.href = "/login";
+      }
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+  };
+
+  // Filter the data based on the search term
+  const filteredData = data.filter((item) => {
+    return (
+      item.seqNo.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.productId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.productDescription
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      item.uom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.orderQty
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      item.deliveredQty
+        .toString()
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  });
 
   return (
     <div>
@@ -461,8 +515,7 @@ function RequestApproval() {
                             color="primary"
                             size="small"
                             className="mx-2"
-                            component={Link}
-                            to={`/view-request/${delivery.refNo}`}
+                            onClick={() => itemView(delivery.refNo)}
                           >
                             <FontAwesomeIcon icon={faEye} />
                           </Button>
@@ -476,6 +529,133 @@ function RequestApproval() {
           </Card>
         </div>
       </div>
+      <Dialog
+        open={confirm}
+        onClose={() => setConfirm(false)}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogContent>
+          <Card>
+            <Card.Body>
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                />
+                <div className="input-group-append">
+                  <span className="input-group-text">
+                    <FontAwesomeIcon icon={faSearch} />
+                  </span>
+                </div>
+              </div>
+              <TableContainer sx={{ maxHeight: "300px", overflowY: "auto" }}>
+                <Table stickyHeader aria-label="sticky table" size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                        align="left"
+                      >
+                        Seq No
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                        align="left"
+                      >
+                        Product ID
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                        align="left"
+                      >
+                        Description
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                        align="left"
+                      >
+                        UOM
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                        align="left"
+                      >
+                        Order Qty
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          backgroundColor: "#3d3d3d",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                        align="left"
+                      >
+                        Delivered Qty
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredData.map((item) => (
+                      <TableRow key={item.seqNo}>
+                        <TableCell align="left">{item.seqNo}</TableCell>
+                        <TableCell align="left">{item.productId}</TableCell>
+                        <TableCell align="left">
+                          {item.productDescription}
+                        </TableCell>
+                        <TableCell align="left">{item.uom}</TableCell>
+                        <TableCell align="center">{item.orderQty}</TableCell>
+                        <TableCell align="center">
+                          {item.deliveredQty}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Card.Body>
+          </Card>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="warning"
+            variant="contained"
+            className="mx-3 mb-2"
+            onClick={() => setConfirm(false)}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

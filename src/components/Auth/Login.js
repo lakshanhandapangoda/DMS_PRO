@@ -56,7 +56,7 @@ const Login = ({ history }) => {
 
       setBranches(response.data["customerCode"]);
       setBranch_name(response.data["custSupName"]);
-      localStorage.setItem("branchCode", branches);
+      localStorage.setItem("branchCode", response.data["customerCode"]);
       localStorage.setItem("ipAddress", response.data["ipAddress"]);
     } catch (error) {
       console.error("Error occurred while fetching branches:", error);
