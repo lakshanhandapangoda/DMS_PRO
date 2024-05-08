@@ -473,9 +473,6 @@ function RequestApproval() {
                           <div>
                             {new Date(delivery.date).toLocaleDateString()}
                           </div>
-                          <div>
-                            {new Date(delivery.date).toLocaleTimeString()}
-                          </div>
                         </TableCell>
 
                         <TableCell>{delivery.deliveyTypeText}</TableCell>

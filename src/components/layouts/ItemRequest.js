@@ -67,6 +67,9 @@ function ItemRequest() {
         );
         setProductList(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          window.location.href = "/login";
+        }
         setShowAlert({
           type: "error",
           message: error.toString(),
@@ -198,7 +201,7 @@ function ItemRequest() {
       setProductId("");
       setQuantity("");
       setRequestDate("");
-      setShowAddModal(false);
+      // setShowAddModal(false);
     } else {
       console.error("Selected product not found in the product list.");
     }
@@ -520,6 +523,7 @@ function ItemRequest() {
                         fontWeight: "bold",
                         backgroundColor: "#3d3d3d",
                         color: "white",
+                        maxWidth: "250px",
                       }}
                       align="left"
                     >
@@ -530,6 +534,7 @@ function ItemRequest() {
                         fontWeight: "bold",
                         backgroundColor: "#3d3d3d",
                         color: "white",
+                        maxWidth: "90px",
                       }}
                       align="left"
                     >
@@ -540,8 +545,9 @@ function ItemRequest() {
                         fontWeight: "bold",
                         backgroundColor: "#3d3d3d",
                         color: "white",
+                        maxWidth: "80px",
                       }}
-                      align="left"
+                      align="right"
                     >
                       UOM
                     </TableCell>
@@ -580,32 +586,53 @@ function ItemRequest() {
                 <TableBody>
                   {items.map((item, index) => (
                     <StyledTableRow key={index}>
-                      <TableCell align="left">{item.productId}</TableCell>
-                      <TableCell style={{ maxWidth: "200px" }} align="left">
+                      <TableCell align="left" style={{ maxWidth: "100px" }}>
+                        {item.productId}
+                      </TableCell>
+                      <TableCell style={{ maxWidth: "250px" }} align="left">
                         {item.productDescription}
                       </TableCell>
-                      <TableCell>
+                      <TableCell style={{ maxWidth: "90px" }} align="right">
                         {editIndex === index ? (
+                          // <input
+                          //   type="number"
+                          //   min="0"
+                          //   value={item.quantity}
+                          //   onChange={(e) =>
+                          //     setItems(
+                          //       items.map((itm, idx) =>
+                          //         idx === index
+                          //           ? { ...itm, quantity: e.target.value }
+                          //           : itm
+                          //       )
+                          //     )
+                          //   }
+                          //   style={{ maxWidth: "90px" }} // Adjust the max-width as needed
+                          // />
+
                           <input
                             type="number"
-                            min="0"
+                            min="1"
                             value={item.quantity}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const newValue = e.target.value.slice(0, 3); // Limit the input to maximum 3 characters
                               setItems(
                                 items.map((itm, idx) =>
                                   idx === index
-                                    ? { ...itm, quantity: e.target.value }
+                                    ? { ...itm, quantity: newValue }
                                     : itm
                                 )
-                              )
-                            }
-                            style={{ maxWidth: "90px" }} // Adjust the max-width as needed
+                              );
+                            }}
+                            style={{ maxWidth: "80px", textAlign: "right" }} // Adjust max-width as needed
                           />
                         ) : (
                           item.quantity
                         )}
                       </TableCell>
-                      <TableCell align="left">{item.uom}</TableCell>
+                      <TableCell align="left" style={{ maxWidth: "80px" }}>
+                        {item.uom}
+                      </TableCell>
                       <TableCell align="left">{item.requestBy}</TableCell>
                       <TableCell align="left">
                         {new Date(item.requestDate).toLocaleString()}
